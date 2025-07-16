@@ -2,7 +2,6 @@ import type {ApiClient} from "../services/ApiClient.ts";
 import type {FC} from "react";
 import {useQuery} from "@tanstack/react-query";
 import type {Employee} from "../model/dto-types.ts";
-import type {AxiosError} from "axios";
 import {Avatar, Spinner, Stack, Table, Text} from "@chakra-ui/react";
 
 type Props = {
@@ -11,7 +10,7 @@ type Props = {
 
 const EmployeeTable: FC<Props> = ({apiClient}) => {
     const queryKey = ["/employees"];
-    const {isLoading, error, data} = useQuery<Employee[], AxiosError>(
+    const {isLoading, error, data} = useQuery<Employee[], Error>(
         {
             queryKey,
             queryFn: () => apiClient.getAll(),

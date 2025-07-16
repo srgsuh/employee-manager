@@ -1,9 +1,13 @@
-import type {ApiClient} from "./ApiClient";
+import type {ApiClient, ApiConfig} from "./ApiClient";
 import type {Employee, SearchObject} from "../model/dto-types.ts";
 import ApiTransportAxios from "./ApiTransportAxios.ts";
+import ApiTransportFetch from "./ApiTransportFetch.ts";
+import apiConfigData from "../../config/config.json";
+
+const apiConfig = apiConfigData as ApiConfig;
 
 export interface ApiTransport {
-    get<T>(endpoint: string, params?: Record<string, string> | undefined): Promise<T>;
+    get<T>(endpoint: string, params?: Record<string, string>): Promise<T>;
 }
 
 class ApiClientDB implements ApiClient {
@@ -22,6 +26,9 @@ class ApiClientDB implements ApiClient {
 }
 
 const apiTransportAxios = new ApiTransportAxios();
-const apiClient = new ApiClientDB(apiTransportAxios);
+const apiTransportFetch = new ApiTransportFetch();
+const apiClient = new ApiClientDB(
+    apiConfig.transport === 'axios' ? apiTransportAxios : apiTransportFetch
+);
 
 export default apiClient;

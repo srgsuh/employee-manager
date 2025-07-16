@@ -19,41 +19,39 @@ const EmployeeTable: FC<Props> = ({apiClient}) => {
         }
     );
     return (
-        <Stack p={2}>
+        <Stack p={2} height={"100%"} justify={"center"} alignItems={"center"}>
             {isLoading && <Spinner />}
             {error && <Text color={"red"}>{`Network error: ${error.message}`}</Text>}
-            {data && (
-                <Table.ScrollArea borderWidth="1px" rounded="md" height="80vh">
-                    <Table.Root size="sm" stickyHeader>
-                        <Table.Header>
-                            <Table.Row bg="bg.subtle">
-                                <Table.ColumnHeader>№</Table.ColumnHeader>
-                                <Table.ColumnHeader>Img</Table.ColumnHeader>
-                                <Table.ColumnHeader>Name</Table.ColumnHeader>
-                                <Table.ColumnHeader>Department</Table.ColumnHeader>
-                                <Table.ColumnHeader>Birthday</Table.ColumnHeader>
-                                <Table.ColumnHeader>Salary</Table.ColumnHeader>
-                            </Table.Row>
-                        </Table.Header>
+            <Table.ScrollArea borderWidth="1px" rounded="md" height="80vh" width={"85vw"}>
+                <Table.Root size="sm" stickyHeader>
+                    <Table.Header>
+                        <Table.Row bg="bg.subtle">
+                            <Table.ColumnHeader>№</Table.ColumnHeader>
+                            <Table.ColumnHeader>Img</Table.ColumnHeader>
+                            <Table.ColumnHeader>Name</Table.ColumnHeader>
+                            <Table.ColumnHeader>Department</Table.ColumnHeader>
+                            <Table.ColumnHeader>Birthday</Table.ColumnHeader>
+                            <Table.ColumnHeader>Salary</Table.ColumnHeader>
+                        </Table.Row>
+                    </Table.Header>
 
-                        <Table.Body>
-                            {data.map((e, idx) => (
-                                <Table.Row key={e.id}>
-                                    <Table.Cell>{1 + idx}</Table.Cell>
-                                    <Table.Cell><Avatar.Root>
-                                        <Avatar.Fallback name={e.fullName} />
-                                        <Avatar.Image src={e.avatar} />
-                                    </Avatar.Root></Table.Cell>
-                                    <Table.Cell>{e.fullName}</Table.Cell>
-                                    <Table.Cell>{e.department}</Table.Cell>
-                                    <Table.Cell>{e.birthDate}</Table.Cell>
-                                    <Table.Cell textAlign="end">{e.salary}</Table.Cell>
-                                </Table.Row>
-                            ))}
-                        </Table.Body>
-                    </Table.Root>
-                </Table.ScrollArea>
-            )}
+                    <Table.Body>
+                        {data?.map((e, idx) => (
+                            <Table.Row key={e.id}>
+                                <Table.Cell>{1 + idx}</Table.Cell>
+                                <Table.Cell><Avatar.Root>
+                                    <Avatar.Fallback name={e.fullName} />
+                                    <Avatar.Image src={e.avatar} />
+                                </Avatar.Root></Table.Cell>
+                                <Table.Cell>{e.fullName}</Table.Cell>
+                                <Table.Cell>{e.department}</Table.Cell>
+                                <Table.Cell>{e.birthDate}</Table.Cell>
+                                <Table.Cell textAlign="end">{e.salary}</Table.Cell>
+                            </Table.Row>
+                        ))}
+                    </Table.Body>
+                </Table.Root>
+            </Table.ScrollArea>
         </Stack>
     );
 };

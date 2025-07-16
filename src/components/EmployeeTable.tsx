@@ -3,7 +3,7 @@ import type {FC} from "react";
 import {useQuery} from "@tanstack/react-query";
 import type {Employee} from "../model/dto-types.ts";
 import type {AxiosError} from "axios";
-import {Spinner} from "@chakra-ui/react";
+import {Avatar, Spinner, Stack, Table, Text} from "@chakra-ui/react";
 
 type Props = {
     apiClient: ApiClient;
@@ -14,20 +14,47 @@ const EmployeeTable: FC<Props> = ({apiClient}) => {
     const {isLoading, error, data} = useQuery<Employee[], AxiosError>(
         {
             queryKey,
-            queryFn: () => apiClient.getAll()
+            queryFn: () => apiClient.getAll(),
+            staleTime: 3_600_000
         }
     );
     return (
-        <div style={{padding: "20px", margin: "0"}}>
+        <Stack p={2}>
             {isLoading && <Spinner />}
-            {error && <p style={{color: "red"}}>{`Error: ${error.message}`}</p>}
-            {data && (<ol  type={"1"} style={{padding: "20px", listStyleType: "decimal", margin: "0"}}>
-                {data.map(e=>(<li key = {e.id} style={{margin: "0"}}>
-                        {`Name: ${e.fullName}, bDate: ${e.birthDate}, dep: ${e.department}, salary: ${e.salary}`}
-                    </li>)
-                )}
-            </ol>)}
-        </div>
+            {error && <Text color={"red"}>{`Network error: ${error.message}`}</Text>}
+            {data && (
+                <Table.ScrollArea borderWidth="1px" rounded="md" height="80vh">
+                    <Table.Root size="sm" stickyHeader>
+                        <Table.Header>
+                            <Table.Row bg="bg.subtle">
+                                <Table.ColumnHeader>№</Table.ColumnHeader>
+                                <Table.ColumnHeader>Img</Table.ColumnHeader>
+                                <Table.ColumnHeader>Name</Table.ColumnHeader>
+                                <Table.ColumnHeader>Department</Table.ColumnHeader>
+                                <Table.ColumnHeader>Birthday</Table.ColumnHeader>
+                                <Table.ColumnHeader>Salary</Table.ColumnHeader>
+                            </Table.Row>
+                        </Table.Header>
+
+                        <Table.Body>
+                            {data.map((e, idx) => (
+                                <Table.Row key={e.id}>
+                                    <Table.Cell>{1 + idx}</Table.Cell>
+                                    <Table.Cell><Avatar.Root>
+                                        <Avatar.Fallback name={e.fullName} />
+                                        <Avatar.Image src={e.avatar} />
+                                    </Avatar.Root></Table.Cell>
+                                    <Table.Cell>{e.fullName}</Table.Cell>
+                                    <Table.Cell>{e.department}</Table.Cell>
+                                    <Table.Cell>{e.birthDate}</Table.Cell>
+                                    <Table.Cell textAlign="end">{e.salary}</Table.Cell>
+                                </Table.Row>
+                            ))}
+                        </Table.Body>
+                    </Table.Root>
+                </Table.ScrollArea>
+            )}
+        </Stack>
     );
 };
 

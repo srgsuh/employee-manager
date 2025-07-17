@@ -24,7 +24,7 @@ const EmployeeTable: FC<Props> = ({apiClient}) => {
             <Table.ScrollArea borderWidth="1px" rounded="md" height="80vh" width={"85vw"}>
                 <Table.Root size="sm" stickyHeader>
                     <Table.Header>
-                        <Table.Row bg="bg.subtle" zIndex="0">
+                        <Table.Row bg="bg.subtle">
                             <Table.ColumnHeader>№</Table.ColumnHeader>
                             <Table.ColumnHeader>Img</Table.ColumnHeader>
                             <Table.ColumnHeader>Name</Table.ColumnHeader>

@@ -10,6 +10,7 @@ interface MenuProps<T extends SelectorItem> {
     getLink(item: T): ReactElement;
 }
 
+
 const GenericNavMenu =
     <T extends SelectorItem>({items, getLink, menuName,}: MenuProps<T>) => {
     const [isOpen, setIsOpen] = useState(false);
@@ -25,7 +26,7 @@ const GenericNavMenu =
             </Menu.Trigger>
             <Portal>
                 <Menu.Positioner>
-                    <MotionElement>
+                    <MotionElement zIndex={1000}>
                         <Menu.Content>
                             {items.map((item) => (
                                 <Menu.Item asChild

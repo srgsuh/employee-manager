@@ -26,11 +26,11 @@ const GenericNavMenu =
             <Portal>
                 <Menu.Positioner>
                     <MotionElement>
-                        <Menu.Content >
+                        <Menu.Content>
                             {items.map((item) => (
                                 <Menu.Item asChild
-                                    key={item.value}
-                                    value={item.value}
+                                           key={item.value}
+                                           value={item.value}
                                 >
                                     {getLink(item)}
                                 </Menu.Item>

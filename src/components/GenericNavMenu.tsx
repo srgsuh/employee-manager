@@ -1,0 +1,48 @@
+import {useState} from "react";
+import {Button, Menu, Portal} from "@chakra-ui/react";
+import MotionElement from "./MotionElement.tsx";
+import {FaChevronDown, FaChevronUp} from "react-icons/fa";
+import type {SelectorItem} from "../model/types.ts";
+import { NavLink } from "react-router-dom"
+
+interface MenuProps<T extends SelectorItem> {
+    items: T[];
+    menuName: string;
+    getLink(item: T): string;
+    // getNavLink(item: T): JSX.Element;
+}
+
+const GenericNavMenu =
+    <T extends SelectorItem>({items, getLink, menuName,}: MenuProps<T>) => {
+    const [isOpen, setIsOpen] = useState(false);
+    return (
+        <Menu.Root open={isOpen}
+            onOpenChange={(details) => setIsOpen(details.open)}>
+            <Menu.Trigger asChild>
+                <Button variant="outline" size="sm" minW={200}>
+                    {menuName}
+                    { isOpen? <MotionElement ><FaChevronUp /></MotionElement>
+                        : <FaChevronDown />}
+                </Button>
+            </Menu.Trigger>
+            <Portal>
+                <Menu.Positioner>
+                    <MotionElement>
+                        <Menu.Content >
+                            {items.map((item) => (
+                                <Menu.Item asChild
+                                    key={item.value}
+                                    value={item.value}
+                                >
+                                    <NavLink to={getLink(item)}>{item.name}</NavLink>
+                                </Menu.Item>
+                            ))}
+                        </Menu.Content>
+                    </MotionElement>
+                </Menu.Positioner>
+            </Portal>
+        </Menu.Root>
+    );
+};
+
+export default GenericNavMenu;

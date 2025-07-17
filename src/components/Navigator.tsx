@@ -1,6 +1,7 @@
 import {HStack} from "@chakra-ui/react";
 import {NavLink as RouterLink} from "react-router-dom";
 import {ColorModeButton} from "./ui/color-mode.tsx";
+import StatisticsSelector from "./StatisticsSelector.tsx";
 
 const Navigator = () => {
     return (
@@ -11,9 +12,8 @@ const Navigator = () => {
             <RouterLink to = "/add">
                 Add employee
             </RouterLink>
-            <RouterLink to = "/stats">
-                Statistics
-            </RouterLink>
+            <StatisticsSelector>
+            </StatisticsSelector>
             <ColorModeButton />
         </HStack>
     );

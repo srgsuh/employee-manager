@@ -1,15 +1,13 @@
-import {useState} from "react";
+import {type ReactElement, useState} from "react";
 import {Button, Menu, Portal} from "@chakra-ui/react";
 import MotionElement from "./MotionElement.tsx";
 import {FaChevronDown, FaChevronUp} from "react-icons/fa";
 import type {SelectorItem} from "../model/types.ts";
-import { NavLink } from "react-router-dom"
 
 interface MenuProps<T extends SelectorItem> {
     items: T[];
     menuName: string;
-    getLink(item: T): string;
-    // getNavLink(item: T): JSX.Element;
+    getLink(item: T): ReactElement;
 }
 
 const GenericNavMenu =
@@ -34,7 +32,7 @@ const GenericNavMenu =
                                     key={item.value}
                                     value={item.value}
                                 >
-                                    <NavLink to={getLink(item)}>{item.name}</NavLink>
+                                    {getLink(item)}
                                 </Menu.Item>
                             ))}
                         </Menu.Content>

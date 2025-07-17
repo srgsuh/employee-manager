@@ -18,7 +18,7 @@ const GenericNavMenu =
         <Menu.Root open={isOpen}
             onOpenChange={(details) => setIsOpen(details.open)}>
             <Menu.Trigger asChild>
-                <Button variant="outline" size="sm" minW={200}>
+                <Button variant="ghost" size="sm" minW={200}>
                     {menuName}
                     { isOpen? <MotionElement ><FaChevronUp /></MotionElement>
                         : <FaChevronDown />}

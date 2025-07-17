@@ -1,4 +1,4 @@
-import {HStack} from "@chakra-ui/react";
+import {Button, HStack} from "@chakra-ui/react";
 import {NavLink as RouterLink} from "react-router-dom";
 import {ColorModeButton} from "./ui/color-mode.tsx";
 import StatisticsSelector from "./StatisticsSelector.tsx";
@@ -6,15 +6,19 @@ import StatisticsSelector from "./StatisticsSelector.tsx";
 const Navigator = () => {
     return (
         <HStack justify="space-between" p={2}>
-            <RouterLink to = "/">
+            <Button variant="ghost" size="sm" minW={200} asChild>
+                <RouterLink to = "/">
                 Home
-            </RouterLink>
-            <RouterLink to = "/add">
-                Add employee
-            </RouterLink>
+                </RouterLink>
+            </Button>
+            <Button variant="ghost" size="sm" minW={200} asChild>
+                <RouterLink to = "/add">
+                    Add employee
+                </RouterLink>
+            </Button>
             <StatisticsSelector>
             </StatisticsSelector>
-            <ColorModeButton />
+            <ColorModeButton size={"md"}/>
         </HStack>
     );
 };

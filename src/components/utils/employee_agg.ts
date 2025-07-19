@@ -30,11 +30,10 @@ export function aggregateEmployee(
                             groupingStep: number): DiagramPoint[]
 {
     const numbers = Employees.map(reducer);
+    numbers.sort((a, b) => a - b);
     const groupData = rangeGrouping(numbers, groupingStep);
-    return _.sortBy(
-        Object.entries(groupData).map(([k, v]:[string, number]) => {
-            return {name: k, value: v};
-        }), ["name"]
-    );
+    return Object.entries(groupData).map(([k, v]:[string, number]) => {
+        return {name: k, value: v};
+    });
 
 }

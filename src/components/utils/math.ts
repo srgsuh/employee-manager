@@ -1,5 +1,4 @@
 import {generateRandomSequence} from "./rand-sequence-gen.ts";
-import _ from "lodash";
 
 export function getAgeFromDate(dateStr: string): number {
     const bDate = new Date(dateStr);

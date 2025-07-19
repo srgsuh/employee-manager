@@ -4,20 +4,11 @@ import _ from "lodash";
 import StatisticsPage from "./StatisticsPage.tsx";
 import apiClient from "../services/ApiClientDB.ts";
 import LineDiagram from "../components/LineDiagram.tsx";
+import {aggregateEmployee, salaryReducer} from "../components/utils/employee_agg.ts";
 
-const grouping = (v: number): string => {
-    const index = 10_000;
-    const vr = Math.floor(v/index)*index;
-    return `${vr}-${vr + index}`;
-};
 
-const aggFunc: (e: Employee[]) => DiagramPoint[] = (employees) => {
-    const salaries = employees.map(e=>e.salary);
-    const gSalaries = _.countBy(salaries, grouping);
-    const aggSalaries = Object.entries(gSalaries)
-        .map(([k,v]:[string, number]) => ({name: k, value: v}));
-    return _.sortBy(aggSalaries, ["name"]);
-}
+const aggFunc: (e: Employee[]) => DiagramPoint[] =
+    (e) =>aggregateEmployee(e, salaryReducer, 10_000);
 
 const SalaryStatsPage = () => {
     return (

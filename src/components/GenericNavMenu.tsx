@@ -8,17 +8,18 @@ interface MenuProps<T extends SelectorItem> {
     items: T[];
     menuName: string;
     getLink(item: T): ReactElement;
+    isActive: boolean;
 }
 
 
 const GenericNavMenu =
-    <T extends SelectorItem>({items, getLink, menuName,}: MenuProps<T>) => {
+    <T extends SelectorItem>({items, getLink, menuName, isActive,}: MenuProps<T>) => {
     const [isOpen, setIsOpen] = useState(false);
     return (
         <Menu.Root open={isOpen}
             onOpenChange={(details) => setIsOpen(details.open)}>
             <Menu.Trigger asChild>
-                <Button variant="ghost" size="sm" minW={200}>
+                <Button fontWeight={isActive? "bold": "normal"} variant="ghost" size="sm" minW={200}>
                     {menuName}
                     { isOpen? <MotionElement ><FaChevronUp /></MotionElement>
                         : <FaChevronDown />}

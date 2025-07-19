@@ -1,9 +1,10 @@
 import type {SelectorItem} from "../model/types.ts";
 import GenericNavMenu from "./GenericNavMenu.tsx";
-import {NavLink} from "react-router-dom";
+import {NavLink, useLocation} from "react-router-dom";
 import type {ReactElement} from "react";
 
 const StatisticsSelector = () => {
+    const location = useLocation();
     const items: SelectorItem[] = [
         {name: "Age stats", value: "by-age"},
         {name: "Salary stats", value: "by-salary"},
@@ -15,7 +16,8 @@ const StatisticsSelector = () => {
     return (
         <GenericNavMenu items={items}
                         menuName={"Statistics"}
-                        getLink={getLink}>
+                        getLink={getLink}
+        isActive={location.pathname.startsWith("/statistics")}>
         </GenericNavMenu>
     );
 };

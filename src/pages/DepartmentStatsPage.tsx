@@ -16,7 +16,8 @@ const DepartmentStatsPage = () => {
     return (
         <StatisticsPage aggFunc={aggFunc}
                         apiClient={apiClient}
-                        StatisticsDiagram={PieDiagram}>
+                        StatisticsDiagram={PieDiagram}
+                        xLabel={"Department"}>
         </StatisticsPage>
     );
 };

@@ -30,7 +30,9 @@ const LineDiagram = ({data, aggFunc, xLabel}: DiagramProps) => {
                 <Tooltip
                     animationDuration={100}
                     cursor={false}
-                    content={<Chart.Tooltip />}
+                    labelFormatter={(value) => `${xLabel}: ${value}`}
+                    formatter={(value) => `Employees: ${value}`}
+                    content={<Chart.Tooltip hideSeriesLabel={true} />}
                 />
                 {chart.series.map((item) => (
                     <Line

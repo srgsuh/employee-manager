@@ -4,7 +4,7 @@ import type {DiagramProps} from "../model/types.ts";
 import {getRandomElement} from "./utils/math.ts";
 import {colors} from "../model/colors.ts";
 
-const LineDiagram = ({data, aggFunc}: DiagramProps) => {
+const LineDiagram = ({data, aggFunc, xLabel}: DiagramProps) => {
     const aggData = aggFunc(data);
     const chart = useChart({
         data: aggData,
@@ -18,7 +18,7 @@ const LineDiagram = ({data, aggFunc}: DiagramProps) => {
                     axisLine={false}
                     dataKey={chart.key("name")}
                     stroke={chart.color("border")}
-                    label={{ value: "Age", position: "bottom" }}
+                    label={{ value: xLabel || "Value", position: "bottom" }}
                 />
                 <YAxis
                     axisLine={false}
@@ -40,6 +40,7 @@ const LineDiagram = ({data, aggFunc}: DiagramProps) => {
                         stroke={chart.color(item.color)}
                         strokeWidth={2}
                         dot={false}
+                        type="natural"
                     />
                 ))}
             </LineChart>

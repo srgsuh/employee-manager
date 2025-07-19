@@ -9,10 +9,11 @@ type StatisticsPageProps = {
     apiClient: ApiClient;
     aggFunc: (employees: Employee[]) => DiagramPoint[];
     StatisticsDiagram: FC<DiagramProps>;
+    xLabel?: string;
 }
 
 const StatisticsPage: FC<StatisticsPageProps> =
-    ({apiClient, StatisticsDiagram, aggFunc}) => {
+    ({apiClient, StatisticsDiagram, aggFunc, xLabel}) => {
     const queryKey = ["/employees"];
     const {isLoading, error, data} = useQuery<Employee[], Error>({
         queryKey,
@@ -26,7 +27,7 @@ const StatisticsPage: FC<StatisticsPageProps> =
             {
                 data &&
                 <HStack p={2} justifyContent="center" alignItems="center">
-                    <StatisticsDiagram aggFunc={aggFunc} data={data}></StatisticsDiagram>
+                    <StatisticsDiagram xLabel = {xLabel} aggFunc={aggFunc} data={data}></StatisticsDiagram>
                 </HStack>
             }
         </>

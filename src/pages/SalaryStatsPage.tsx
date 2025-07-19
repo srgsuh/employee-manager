@@ -23,7 +23,8 @@ const SalaryStatsPage = () => {
     return (
         <StatisticsPage aggFunc={aggFunc}
         apiClient={apiClient}
-        StatisticsDiagram={LineDiagram}>
+        StatisticsDiagram={LineDiagram}
+        xLabel={"Salary"}>
 
         </StatisticsPage>
     );

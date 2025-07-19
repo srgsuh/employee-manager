@@ -17,4 +17,5 @@ export interface ColoredDiagramPoint extends DiagramPoint {
 export interface DiagramProps {
     data: Employee[];
     aggFunc: (employees: Employee[]) => DiagramPoint[];
+    xLabel?: string;
 }

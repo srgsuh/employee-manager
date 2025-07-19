@@ -25,8 +25,8 @@ const AgeStatsPage = () => {
     return (
         <StatisticsPage aggFunc = {aggFunc}
                         apiClient={apiClient}
-                        StatisticsDiagram={LineDiagram}>
-
+                        StatisticsDiagram={LineDiagram}
+                        xLabel={"Age"}>
         </StatisticsPage>
     );
 };

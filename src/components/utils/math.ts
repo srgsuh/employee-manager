@@ -13,3 +13,7 @@ export function randomSubarray<T>(array: T[], length: number): T[] {
     const indices = generateRandomSequence(length, 0, array.length - 1);
     return indices.map(i => array[i]);
 }
+
+export function getRandomElement<T>(array: T[]): T {
+    return array[Math.floor(Math.random() * array.length)];
+}

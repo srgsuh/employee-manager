@@ -1,27 +1,14 @@
 import {Chart, useChart} from "@chakra-ui/charts";
 import {CartesianGrid, Line, LineChart, Tooltip, XAxis, YAxis} from "recharts";
 import type {DiagramProps} from "../model/types.ts";
-import _ from "lodash";
-import {getAgeFromDate} from "./utils/math.ts";
+import {getRandomElement} from "./utils/math.ts";
+import {colors} from "../model/colors.ts";
 
-const groupingFunction = (v: number): string => {
-    const vr = Math.floor(v/10)*10;
-    return `${vr} - ${vr + 10}`;
-};
-
-const LineDiagram = ({data}: DiagramProps) => {
-    const ageData = data.map(e => getAgeFromDate(e.birthDate));
-    const groupData = _.countBy(ageData, groupingFunction);
-    const aggData = _.sortBy(
-        Object.entries(groupData).map(
-            ([k, v]) => ({name: k, count: v})
-        ), ["name"]
-    );
-
-
+const LineDiagram = ({data, aggFunc}: DiagramProps) => {
+    const aggData = aggFunc(data);
     const chart = useChart({
         data: aggData,
-        series: [{ name: "count", color: "purple.solid" }],
+        series: [{ name: "value", color: getRandomElement(colors) }],
     })
     return (
         <Chart.Root maxH="sm" chart={chart}>

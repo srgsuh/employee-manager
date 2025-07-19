@@ -1,8 +1,10 @@
+import StatisticsPage from "./StatisticsPage.tsx";
+import apiClient from "../services/ApiClientDB.ts";
+import LineDiagram from "../components/LineDiagram.tsx";
+
 const AgeStatsPage = () => {
     return (
-        <div>
-            Age stats page
-        </div>
+        <StatisticsPage apiClient={apiClient} StatisticsDiagram={LineDiagram}></StatisticsPage>
     );
 };
 

@@ -1,15 +1,23 @@
 import {Chart, useChart} from "@chakra-ui/charts";
 import {CartesianGrid, Line, LineChart, Tooltip, XAxis, YAxis} from "recharts";
+import type {DiagramProps} from "../model/types.ts";
+import _ from "lodash";
+import {getAgeFromDate} from "./utils/math.ts";
 
-const LineDiagram = () => {
-    const aggData = [
-        { point: 20, count: 19 },
-        { point: 30, count: 29 },
-        { point: 40, count: 38 },
-        { point: 50, count: 54 },
-        { point: 60, count: 27 },
-        { point: 70, count: 11 },
-    ]
+const groupingFunction = (v: number): string => {
+    const vr = Math.floor(v/10)*10;
+    return `${vr} - ${vr + 10}`;
+};
+
+const LineDiagram = ({data}: DiagramProps) => {
+    const ageData = data.map(e => getAgeFromDate(e.birthDate));
+    const groupData = _.countBy(ageData, groupingFunction);
+    const aggData = _.sortBy(
+        Object.entries(groupData).map(
+            ([k, v]) => ({point: k, count: v})
+        ), ["point"]
+    );
+
 
     const chart = useChart({
         data: aggData,
@@ -30,7 +38,7 @@ const LineDiagram = () => {
                     tickLine={false}
                     tickMargin={10}
                     stroke={chart.color("border")}
-                    label={{ value: "Customers", position: "left", angle: -90 }}
+                    label={{ value: "Employees", position: "left", angle: -90 }}
                 />
                 <Tooltip
                     animationDuration={100}

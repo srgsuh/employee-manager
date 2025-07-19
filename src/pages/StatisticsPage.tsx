@@ -2,16 +2,17 @@ import type {ApiClient} from "../services/ApiClient.ts";
 import type {FC} from "react";
 import {useQuery} from "@tanstack/react-query";
 import type {Employee} from "../model/dto-types.ts";
-import type {DiagramProps} from "../model/types.ts";
+import type {DiagramPoint, DiagramProps} from "../model/types.ts";
 import {HStack, Spinner, Text} from "@chakra-ui/react";
 
 type StatisticsPageProps = {
     apiClient: ApiClient;
+    aggFunc: (employees: Employee[]) => DiagramPoint[];
     StatisticsDiagram: FC<DiagramProps>;
 }
 
 const StatisticsPage: FC<StatisticsPageProps> =
-    ({apiClient, StatisticsDiagram}) => {
+    ({apiClient, StatisticsDiagram, aggFunc}) => {
     const queryKey = ["/employees"];
     const {isLoading, error, data} = useQuery<Employee[], Error>({
         queryKey,
@@ -25,7 +26,7 @@ const StatisticsPage: FC<StatisticsPageProps> =
             {
                 data &&
                 <HStack p={2} justifyContent="center" alignItems="center">
-                    <StatisticsDiagram data={data}></StatisticsDiagram>
+                    <StatisticsDiagram aggFunc={aggFunc} data={data}></StatisticsDiagram>
                 </HStack>
             }
         </>

@@ -14,8 +14,8 @@ const LineDiagram = ({data}: DiagramProps) => {
     const groupData = _.countBy(ageData, groupingFunction);
     const aggData = _.sortBy(
         Object.entries(groupData).map(
-            ([k, v]) => ({point: k, count: v})
-        ), ["point"]
+            ([k, v]) => ({name: k, count: v})
+        ), ["name"]
     );
 
 
@@ -29,7 +29,7 @@ const LineDiagram = ({data}: DiagramProps) => {
                 <CartesianGrid stroke={chart.color("border")} vertical={false} />
                 <XAxis
                     axisLine={false}
-                    dataKey={chart.key("point")}
+                    dataKey={chart.key("name")}
                     stroke={chart.color("border")}
                     label={{ value: "Age", position: "bottom" }}
                 />

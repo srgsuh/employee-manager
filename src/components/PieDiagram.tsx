@@ -1,36 +1,21 @@
-import type {DiagramProps} from "../model/types.ts";
-import type {Employee} from "../model/dto-types.ts";
-import _ from "lodash";
+import type {ColoredDiagramPoint, DiagramPoint, DiagramProps} from "../model/types.ts";
 import {Chart, useChart} from "@chakra-ui/charts";
 import {Cell, Legend, Pie, PieChart, Tooltip} from "recharts";
+import {randomSubarray} from "./utils/math.ts";
+import {colors} from "../model/colors.ts";
 
-const groupingFunction = (e: Employee) => e.department;
-const aggregateFunction: (a: Employee[])=> number = a => a.length;
-
-
-const colors = [
-    "teal.solid",
-    "red.solid",
-    "cyan.solid",
-    "purple.solid",
-    "green.solid",
-    "pink.solid",
-    "yellow.solid",
-    "blue.solid",
-    "orange.solid",
-];
+const coloringFun: (a: DiagramPoint[])=> ColoredDiagramPoint[] = (a) => {
+    const dColors = randomSubarray<string>(colors, a.length);
+    return a.map((p, index) => ({
+        ...p,
+        color: dColors[index]
+    }))
+}
 
 const PieDiagram = ({
-  data,
+  data, aggFunc,
 }: DiagramProps) => {
-    const grouped = _.groupBy(data, groupingFunction);
-    const aggData = Object.entries(grouped).map(([dept, arr], idx) => {
-        return {
-            name: dept,
-            value: aggregateFunction(arr),
-            color: colors[idx]
-        }
-    });
+    const aggData = coloringFun(aggFunc(data));
     const chart = useChart({
         data: aggData
     });

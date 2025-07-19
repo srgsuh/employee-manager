@@ -1,3 +1,5 @@
+import {generateRandomSequence} from "./rand-sequence-gen.ts";
+
 export function getAgeFromDate(dateStr: string): number {
     const bDate = new Date(dateStr);
     const now = new Date();
@@ -5,4 +7,9 @@ export function getAgeFromDate(dateStr: string): number {
     const bDateThisYear = new Date(today.getFullYear(), bDate.getMonth(), bDate.getDate());
     return (today.getFullYear() - bDate.getFullYear()) +
         (today.valueOf() > bDateThisYear.valueOf() ? 0 : -1);
+}
+
+export function randomSubarray<T>(array: T[], length: number): T[] {
+    const indices = generateRandomSequence(length, 0, array.length - 1);
+    return indices.map(i => array[i]);
 }

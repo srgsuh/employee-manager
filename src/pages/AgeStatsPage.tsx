@@ -1,10 +1,10 @@
 import StatisticsPage from "./StatisticsPage.tsx";
 import apiClient from "../services/ApiClientDB.ts";
-import LineDiagram from "../components/LineDiagram.tsx";
 import type {Employee} from "../model/dto-types.ts";
 import type {DiagramPoint} from "../model/types.ts";
 import {getAgeFromDate} from "../components/utils/math.ts";
 import _ from "lodash";
+import LineDiagram from "../components/LineDiagram.tsx";
 
 const groupingFunction = (v: number): string => {
     const vr = Math.floor(v/10)*10;
@@ -23,7 +23,11 @@ const aggFunc:(e: Employee[]) => DiagramPoint[] = (employees) => {
 
 const AgeStatsPage = () => {
     return (
-        <StatisticsPage aggFunc = {aggFunc} apiClient={apiClient} StatisticsDiagram={LineDiagram}></StatisticsPage>
+        <StatisticsPage aggFunc = {aggFunc}
+                        apiClient={apiClient}
+                        StatisticsDiagram={LineDiagram}>
+
+        </StatisticsPage>
     );
 };
 

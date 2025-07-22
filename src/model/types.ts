@@ -3,6 +3,7 @@ import type {Employee} from "./dto-types.ts";
 export interface SelectorItem {
     value: string;
     name: string;
+    path: string;
 }
 
 export interface DiagramPoint {

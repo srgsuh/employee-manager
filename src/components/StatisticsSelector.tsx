@@ -6,16 +6,19 @@ import type {ReactElement} from "react";
 const StatisticsSelector = () => {
     const location = useLocation();
     const items: SelectorItem[] = [
-        {name: "Age stats", value: "by-age"},
-        {name: "Salary stats", value: "by-salary"},
-        {name: "Department stats", value: "by-department"},
+        {name: "Age stats", value: "age", path: "/statistics/by-age"},
+        {name: "Salary stats", value: "sal", path: "/statistics/by-salary"},
+        {name: "Department stats", value: "dep", path: "/statistics/by-department"},
     ];
+    const menuName = items.find(
+        ({path})=>(path === location.pathname))
+        ?.name ?? "Statistics";
     const getLink = (item: SelectorItem): ReactElement => {
-        return <NavLink to={`statistics/${item.value}`}>{item.name}</NavLink>
+        return <NavLink to={`${item.path}`}>{item.name}</NavLink>
     }
     return (
         <GenericNavMenu items={items}
-                        menuName={"Statistics"}
+                        menuName={menuName}
                         getLink={getLink}
         isActive={location.pathname.startsWith("/statistics")}>
         </GenericNavMenu>

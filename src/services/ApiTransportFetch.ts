@@ -14,6 +14,15 @@ function createUrl(endpoint: string, params?: Record<string, string>): string {
 }
 
 export default class ApiTransportFetch implements ApiTransport {
+    patch<T>(endpoint: string, data: unknown, params?: Record<string, string>): Promise<T> {
+        throw new Error("Method not implemented.");
+    }
+    delete<T>(endpoint: string, params?: Record<string, string>): Promise<T> {
+        throw new Error("Method not implemented.");
+    }
+    post<T>(endpoint: string, data: unknown, params?: Record<string, string>): Promise<T> {
+        throw new Error("Method not implemented.");
+    }
     async get<T>(endpoint: string, params?: Record<string, string> | undefined): Promise<T> {
         const url = createUrl(endpoint, params);
         const response = await fetch(url, {

@@ -19,7 +19,38 @@ export default class ApiTransportAxios implements ApiTransport {
     }
 
     async get<T>(endpoint: string, params?: Record<string, string>): Promise<T> {
-        const parameters: AxiosRequestConfig | undefined = params ? {params} : undefined;
-        return this._instance.get<T>(endpoint, parameters).then(res => res.data);
+        const parameters = this.buildParameters(params);
+        return this._instance.get<T>(endpoint, parameters)
+            .then(res => res.data);
+    }
+
+    async delete<T>(endpoint: string, params?: Record<string, string>): Promise<T> {
+        const parameters = this.buildParameters(params);
+        return this._instance.delete(endpoint, parameters).then(res => res.data);
+    }
+
+    async post<T>(endpoint: string, data: unknown, params?: Record<string, string>): Promise<T> {
+        const parameters = this.buildParameters(params);
+        const body: string | undefined = this.buildBody(data);
+        return this._instance.post<T>(endpoint, body, parameters)
+            .then(res => res.data);
+    }
+
+    async patch<T>(endpoint: string, data: unknown, params?: Record<string, string>): Promise<T> {
+        const parameters = this.buildParameters(params);
+        const body: string | undefined = this.buildBody(data);
+        return this._instance.patch<T>(endpoint, body, parameters)
+            .then(res => res.data);
+    }
+
+    private buildParameters(params?: Record<string, string>): AxiosRequestConfig | undefined {
+        return params ? {params} : undefined;
+    }
+
+    private buildBody(body?: unknown): string | undefined {
+        if (typeof body === "string") {
+            return body;
+        }
+        return JSON.stringify(body);
     }
 }

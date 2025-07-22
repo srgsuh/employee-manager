@@ -29,7 +29,7 @@ const EmployeeTable: FC<Props> = ({apiClient}) => {
                             <Table.ColumnHeader>Img</Table.ColumnHeader>
                             <Table.ColumnHeader>Name</Table.ColumnHeader>
                             <Table.ColumnHeader>Department</Table.ColumnHeader>
-                            <Table.ColumnHeader>Birthday</Table.ColumnHeader>
+                            <Table.ColumnHeader>Birthdate</Table.ColumnHeader>
                             <Table.ColumnHeader>Salary</Table.ColumnHeader>
                         </Table.Row>
                     </Table.Header>

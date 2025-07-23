@@ -3,6 +3,8 @@ import type {FC} from "react";
 import {useQuery} from "@tanstack/react-query";
 import type {Employee} from "../model/dto-types.ts";
 import {Avatar, Spinner, Stack, Table, Text} from "@chakra-ui/react";
+import AlertDialog from "./AlertDialog.tsx";
+import useEmployeesMutation from "../hooks/useEmployeesMutation.ts";
 
 type Props = {
     apiClient: ApiClient;
@@ -17,6 +19,10 @@ const EmployeeTable: FC<Props> = ({apiClient}) => {
             staleTime: 3_600_000
         }
     );
+    const mutationDelete = useEmployeesMutation<string>(
+        (id) => apiClient.deleteEmployee(id)
+    );
+
     return (
         <Stack p={2} height={"100%"} justify={"center"} alignItems={"center"}>
             {isLoading && <Spinner />}
@@ -31,6 +37,7 @@ const EmployeeTable: FC<Props> = ({apiClient}) => {
                             <Table.ColumnHeader>Department</Table.ColumnHeader>
                             <Table.ColumnHeader>Birthdate</Table.ColumnHeader>
                             <Table.ColumnHeader>Salary</Table.ColumnHeader>
+                            <Table.ColumnHeader></Table.ColumnHeader>
                         </Table.Row>
                     </Table.Header>
 
@@ -46,6 +53,12 @@ const EmployeeTable: FC<Props> = ({apiClient}) => {
                                 <Table.Cell>{e.department}</Table.Cell>
                                 <Table.Cell>{e.birthDate}</Table.Cell>
                                 <Table.Cell textAlign="end">{e.salary}</Table.Cell>
+                                <Table.Cell>
+                                    <AlertDialog itemDescription={`the record of employee ${e.fullName}`}
+                                                 isDisabled={mutationDelete.isPending}
+                                                 onConfirm={() => mutationDelete.mutate(e.id!)}>
+                                    </AlertDialog>
+                                </Table.Cell>
                             </Table.Row>
                         ))}
                     </Table.Body>

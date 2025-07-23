@@ -1,17 +1,15 @@
 import type {ApiTransport} from "./ApiClientDB.ts"
 import axios, {type AxiosInstance, type AxiosRequestConfig} from "axios";
-import apiConfigData from "../../config/config.json";
-import type {ApiConfig} from "./ApiClient.ts";
+import appConfig from "../config/config.ts";
 
-const apiConfig = apiConfigData as ApiConfig;
 
 export default class ApiTransportAxios implements ApiTransport {
     private _instance: AxiosInstance;
 
     constructor() {
         this._instance = axios.create({
-            baseURL: apiConfig.baseURL,
-            timeout: apiConfig.timeout,
+            baseURL: appConfig.db.baseURL,
+            timeout: appConfig.db.timeout,
             headers: {
                 'Content-Type': 'application/json'
             }

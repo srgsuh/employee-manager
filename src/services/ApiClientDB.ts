@@ -1,10 +1,8 @@
-import type {ApiClient, ApiConfig, Updater} from "./ApiClient";
+import type {ApiClient, Updater} from "./ApiClient";
 import type {Employee, SearchObject} from "../model/dto-types.ts";
 import ApiTransportAxios from "./ApiTransportAxios.ts";
 import ApiTransportFetch from "./ApiTransportFetch.ts";
-import apiConfigData from "../../config/config.json";
-
-const apiConfig = apiConfigData as ApiConfig;
+import appConfig from "../config/config.ts";
 
 export interface ApiTransport {
     get<T>(endpoint: string, params?: Record<string, string>): Promise<T>;
@@ -17,6 +15,7 @@ class ApiClientDB implements ApiClient {
     _apiTransport: ApiTransport;
 
     constructor(apiTransport: ApiTransport) {
+        console.log(`ApiClientDB construct using transport: ${apiTransport?.constructor?.name}`);
         this._apiTransport = apiTransport;
     }
 
@@ -32,6 +31,7 @@ class ApiClientDB implements ApiClient {
     }
 
     deleteEmployee(id: string): Promise<Employee> {
+        console.log(`ApiClientDB construct using transport: ${this._apiTransport?.constructor?.name}`);
         return this._apiTransport.delete<Employee>(`/employees/${id}`);
     }
 
@@ -44,10 +44,8 @@ class ApiClientDB implements ApiClient {
     }
 }
 
-const apiTransportAxios = new ApiTransportAxios();
-const apiTransportFetch = new ApiTransportFetch();
 const apiClient = new ApiClientDB(
-    apiConfig.transport === 'axios' ? apiTransportAxios : apiTransportFetch
+    appConfig.db.transport === 'axios' ? new ApiTransportAxios() :  new ApiTransportFetch()
 );
 
 export default apiClient;

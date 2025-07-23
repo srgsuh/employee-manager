@@ -20,3 +20,5 @@ export interface DiagramProps {
     aggFunc: (employees: Employee[]) => DiagramPoint[];
     xLabel?: string;
 }
+
+export type Department = 'IT' | 'QA' | 'HR' | 'Finance' | 'Sales';

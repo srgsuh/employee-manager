@@ -1,4 +1,3 @@
-import {OpenChangeDetails} from "@chakra-ui/react/dist/types/components/dialog/namespace";
 import type {FC} from "react";
 import {Button, CloseButton, Dialog, Portal} from "@chakra-ui/react";
 

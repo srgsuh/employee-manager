@@ -1,18 +1,19 @@
 import {Controller, useForm} from "react-hook-form";
 import type {Employee} from "../model/dto-types.ts";
 import {
-    Box,
-    Button, CloseButton,
-    createListCollection, Dialog,
+    Button,
+    createListCollection,
     Field,
     HStack,
     Input,
     Portal,
-    Select, Spinner, VStack
+    Select,
+    VStack
 } from "@chakra-ui/react";
 import {getAgeFromDate} from "./utils/math.ts";
 import useEmployeesMutation from "../hooks/useEmployeesMutation.ts";
 import {useState} from "react";
+import NotificationModal from "./NotificationModal.tsx";
 
 interface EmployeeEditFormProps {
     affector: (e: Employee) => Promise<Employee>;
@@ -37,20 +38,24 @@ const EmployeeEditForm = (
             resolve(affectedEmpl);
         }, 1500);
     });
-    const mutator = useEmployeesMutation<Employee>(
+    const mutation = useEmployeesMutation<Employee>(
         updAffector
     );
 
     const [showResult, setShowResult] = useState(false);
-    const onMutateSuccess = (empl: Employee) => {
+    const onMutateSettle = (empl: Employee | undefined, error: Error | null) => {
         setShowResult(true);
-        console.log("Success: " + empl.fullName + " was updated. ID = " + empl.id);
+        if (error) {
+            console.log("Error: " + error.message);
+        } else {
+            console.log("Success: " + empl?.fullName + " was updated. ID = " + empl?.id);
+        }
     }
 
     const submitHandler = (editEmployee: Employee) => {
         const employee = {...baseEmployee, ...editEmployee};
-        mutator.mutate(employee, {
-            onSuccess: onMutateSuccess
+        mutation.mutate(employee, {
+            onSettled: onMutateSettle
         });
     };
     const { register, handleSubmit, formState, control } = useForm<Employee>({
@@ -151,39 +156,20 @@ const EmployeeEditForm = (
                     <Button
                         focusRingColor="red.500"
                         type="submit"
-                        loading={mutator.isPending}
+                        loading={mutation.isPending}
                         loadingText="Updating">Submit</Button>
                     <Button colorScheme="pink" type="reset">Reset</Button>
                 </HStack>
             </form>
-            <Dialog.Root role="dialog"
-                         open = {showResult}
-                         onOpenChange = {(details) => setShowResult(details.open)}
-                         placement={"top"}>
-                <Portal>
-                    <Dialog.Backdrop />
-                    <Dialog.Positioner>
-                        <Dialog.Content>
-                            <Dialog.Header>
-                                <Dialog.Title>Create record confirmation</Dialog.Title>
-                            </Dialog.Header>
-                            <Dialog.Body>
-                                <p>
-                                    The new employee record successfully created.
-                                </p>
-                            </Dialog.Body>
-                            <Dialog.Footer>
-                                <Dialog.ActionTrigger asChild>
-                                    <Button background={"green.500"} color={"black"}>OK</Button>
-                                </Dialog.ActionTrigger>
-                            </Dialog.Footer>
-                            <Dialog.CloseTrigger asChild>
-                                <CloseButton size="sm" />
-                            </Dialog.CloseTrigger>
-                        </Dialog.Content>
-                    </Dialog.Positioner>
-                </Portal>
-            </Dialog.Root>
+            <NotificationModal
+                isOpen={showResult}
+                onIsOpenChange={setShowResult}
+                title={`Employee ${baseEmployee? "update": "add"} ${mutation.isError? "error" :"confirmation"}`}
+                description={mutation.isError? `Error occurred while performing the operation: ${mutation.error?.message || "Network error"}`:
+                    `Employee ${mutation.data?.fullName} record successfully ${baseEmployee? "updated": "added"}.`}
+                onConfirm={()=> {}}
+                isError={mutation.isError}
+            />
         </VStack>
     );
 };

@@ -3,10 +3,10 @@ import EmployeeEditForm from "../components/EmployeeEditForm.tsx";
 const AddEmployeePage = () => {
     return (
         <EmployeeEditForm submitter={console.log} employee={{
-            fullName: "Ivan Drago",
-            department: "IT",
-            birthDate: "1990-01-01",
-            salary: 100_000,
+            fullName: "Ivan Drago II",
+            department: "Finance",
+            birthDate: "1999-09-09",
+            salary: 9_900,
             avatar: "",
         }}/>
     );

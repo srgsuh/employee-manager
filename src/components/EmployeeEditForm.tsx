@@ -1,6 +1,15 @@
 import {Controller, useForm} from "react-hook-form";
 import type {Employee} from "../model/dto-types.ts";
-import {Box, Button, createListCollection, Field, HStack, Input, Portal, Select} from "@chakra-ui/react";
+import {
+    Box,
+    Button,
+    createListCollection,
+    Field,
+    HStack,
+    Input,
+    Portal,
+    Select
+} from "@chakra-ui/react";
 import {getAgeFromDate} from "./utils/math.ts";
 
 interface EmployeeEditFormProps {
@@ -20,7 +29,14 @@ const EmployeeEditForm = (
     {submitter, employee}: EmployeeEditFormProps
 ) => {
     const submitHandler = submitter;
-    const { register, handleSubmit, formState: { errors }, control } = useForm<Employee>();
+    const { register, handleSubmit, formState: { errors }, control } = useForm<Employee>({
+        defaultValues: {
+            fullName: employee?.fullName || "",
+            birthDate: employee?.birthDate || undefined,
+            salary: employee?.salary || undefined,
+            department: employee?.department || undefined
+        }
+    });
     const departments = createListCollection({items: depItems});
     return (
         <Box maxW="md" mx="auto" mt={10} p={4} borderWidth={1} borderRadius="lg">

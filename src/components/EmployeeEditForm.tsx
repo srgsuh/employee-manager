@@ -31,7 +31,7 @@ const EmployeeEditForm = (
     const submitHandler = submitter;
     const { register, handleSubmit, formState: { errors }, control } = useForm<Employee>({
         defaultValues: {
-            fullName: employee?.fullName || "",
+            fullName: employee?.fullName || undefined,
             birthDate: employee?.birthDate || undefined,
             salary: employee?.salary || undefined,
             department: employee?.department || undefined
@@ -56,7 +56,7 @@ const EmployeeEditForm = (
                         <Field.RequiredIndicator />
                     </Field.Label>
                     <Controller
-                        rules={{ required: true }}
+                        rules={{ required: {value: true, message: "Department is required"} }}
                         control={control}
                         name="department"
                         render={({ field }) => (
@@ -94,22 +94,19 @@ const EmployeeEditForm = (
                             </Select.Root>
                         )}
                     />
-                    <Field.ErrorText>{errors.department && "This field is required"}</Field.ErrorText>
+                    <Field.ErrorText>{errors.department?.message}</Field.ErrorText>
                 </Field.Root>
                 <Field.Root invalid={!!errors.birthDate} width="320px">
                     <Field.Label>
                         Birthdate
                     </Field.Label>
                     <Input {...register("birthDate", {
-                                required: true,
+                        required: {value: true, message: "Birthdate is required"},
                                 validate: (date) => {
                                     return getAgeFromDate(date) < 18? "Employee's age must be greater then 18": undefined;
                                 }})
                             } variant="outline" type={"date"} css={{ "--focus-color": "blue" }}/>
-                    <Field.ErrorText>{
-                        (errors.birthDate?.type === "required" && "This field is required") ||
-                        errors.birthDate?.message
-                    }</Field.ErrorText>
+                    <Field.ErrorText>{errors.birthDate?.message}</Field.ErrorText>
                 </Field.Root>
                 <Field.Root invalid={!!errors.salary} width="320px">
                     <Field.Label>Salary</Field.Label>

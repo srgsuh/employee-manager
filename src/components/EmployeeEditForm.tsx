@@ -103,7 +103,7 @@ const EmployeeEditForm = (
                     <Input {...register("birthDate", {
                                 required: true,
                                 validate: (date) => {
-                                    return getAgeFromDate(date) < 18? "Employee's age must be greater then 18": "";
+                                    return getAgeFromDate(date) < 18? "Employee's age must be greater then 18": undefined;
                                 }})
                             } variant="outline" type={"date"} css={{ "--focus-color": "blue" }}/>
                     <Field.ErrorText>{

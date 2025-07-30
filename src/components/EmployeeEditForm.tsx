@@ -116,7 +116,6 @@ const EmployeeEditForm = (
                     })}
                            variant="outline"
                            type={"number"}
-                           step={500}
                            defaultValue={employee?.salary}
                            css={{ "--focus-color": "blue" }}
                     />

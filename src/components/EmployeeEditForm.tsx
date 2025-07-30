@@ -2,19 +2,21 @@ import {Controller, useForm} from "react-hook-form";
 import type {Employee} from "../model/dto-types.ts";
 import {
     Box,
-    Button,
-    createListCollection,
+    Button, CloseButton,
+    createListCollection, Dialog,
     Field,
     HStack,
     Input,
     Portal,
-    Select
+    Select, Spinner, VStack
 } from "@chakra-ui/react";
 import {getAgeFromDate} from "./utils/math.ts";
+import useEmployeesMutation from "../hooks/useEmployeesMutation.ts";
+import {useState} from "react";
 
 interface EmployeeEditFormProps {
-    submitter: (e: Employee) => void;
-    employee?: Employee;
+    affector: (e: Employee) => Promise<Employee>;
+    baseEmployee?: Employee;
 }
 
 const depItems: {label: string, value: string}[] = [
@@ -26,20 +28,44 @@ const depItems: {label: string, value: string}[] = [
 ]
 
 const EmployeeEditForm = (
-    {submitter, employee}: EmployeeEditFormProps
+    {affector, baseEmployee}: EmployeeEditFormProps
 ) => {
-    const submitHandler = submitter;
-    const { register, handleSubmit, formState: { errors }, control } = useForm<Employee>({
+    const updAffector = (e: Employee) =>
+        new Promise<Employee>((resolve) => {
+        setTimeout(() => {
+            const affectedEmpl = affector(e);
+            resolve(affectedEmpl);
+        }, 1500);
+    });
+    const mutator = useEmployeesMutation<Employee>(
+        updAffector
+    );
+
+    const [showResult, setShowResult] = useState(false);
+    const onMutateSuccess = (empl: Employee) => {
+        setShowResult(true);
+        console.log("Success: " + empl.fullName + " was updated. ID = " + empl.id);
+    }
+
+    const submitHandler = (editEmployee: Employee) => {
+        const employee = {...baseEmployee, ...editEmployee};
+        mutator.mutate(employee, {
+            onSuccess: onMutateSuccess
+        });
+    };
+    const { register, handleSubmit, formState, control } = useForm<Employee>({
         defaultValues: {
-            fullName: employee?.fullName || undefined,
-            birthDate: employee?.birthDate || undefined,
-            salary: employee?.salary || undefined,
-            department: employee?.department || undefined
+            fullName: baseEmployee?.fullName || undefined,
+            birthDate: baseEmployee?.birthDate || undefined,
+            salary: baseEmployee?.salary || undefined,
+            department: baseEmployee?.department || undefined
         }
     });
+    const errors = formState.errors;
+
     const departments = createListCollection({items: depItems});
     return (
-        <Box maxW="md" mx="auto" mt={10} p={4} borderWidth={1} borderRadius="lg">
+        <VStack maxW="md" mx="auto" mt={10} p={4} borderWidth={1} borderRadius="lg">
             <form onSubmit={handleSubmit(submitHandler)}>
                 <Field.Root invalid={!!errors.fullName} width="320px" >
                     <Field.Label>First name</Field.Label>
@@ -116,17 +142,49 @@ const EmployeeEditForm = (
                     })}
                            variant="outline"
                            type={"number"}
-                           defaultValue={employee?.salary}
+                           defaultValue={baseEmployee?.salary}
                            css={{ "--focus-color": "blue" }}
                     />
                     <Field.ErrorText>{errors.salary?.message}</Field.ErrorText>
                 </Field.Root>
                 <HStack>
-                    <Button focusRingColor="red.500" type="submit">Submit</Button>
+                    <Button
+                        focusRingColor="red.500"
+                        type="submit"
+                        loading={mutator.isPending}
+                        loadingText="Updating">Submit</Button>
                     <Button colorScheme="pink" type="reset">Reset</Button>
                 </HStack>
             </form>
-        </Box>
+            <Dialog.Root role="dialog"
+                         open = {showResult}
+                         onOpenChange = {(details) => setShowResult(details.open)}
+                         placement={"top"}>
+                <Portal>
+                    <Dialog.Backdrop />
+                    <Dialog.Positioner>
+                        <Dialog.Content>
+                            <Dialog.Header>
+                                <Dialog.Title>Create record confirmation</Dialog.Title>
+                            </Dialog.Header>
+                            <Dialog.Body>
+                                <p>
+                                    The new employee record successfully created.
+                                </p>
+                            </Dialog.Body>
+                            <Dialog.Footer>
+                                <Dialog.ActionTrigger asChild>
+                                    <Button background={"green.500"} color={"black"}>OK</Button>
+                                </Dialog.ActionTrigger>
+                            </Dialog.Footer>
+                            <Dialog.CloseTrigger asChild>
+                                <CloseButton size="sm" />
+                            </Dialog.CloseTrigger>
+                        </Dialog.Content>
+                    </Dialog.Positioner>
+                </Portal>
+            </Dialog.Root>
+        </VStack>
     );
 };
 

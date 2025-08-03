@@ -31,34 +31,9 @@ const depItems: {label: string, value: string}[] = [
 const EmployeeEditForm = (
     {affector, baseEmployee}: EmployeeEditFormProps
 ) => {
-    const updAffector = (e: Employee) =>
-        new Promise<Employee>((resolve) => {
-        setTimeout(() => {
-            const affectedEmpl = affector(e);
-            resolve(affectedEmpl);
-        }, 1500);
-    });
-    const mutation = useEmployeesMutation<Employee>(
-        updAffector
-    );
-
     const [showResult, setShowResult] = useState(false);
-    const onMutateSettle = (empl: Employee | undefined, error: Error | null) => {
-        setShowResult(true);
-        if (error) {
-            console.log("Error: " + error.message);
-        } else {
-            console.log("Success: " + empl?.fullName + " was updated. ID = " + empl?.id);
-        }
-    }
 
-    const submitHandler = (editEmployee: Employee) => {
-        const employee = {...baseEmployee, ...editEmployee};
-        mutation.mutate(employee, {
-            onSettled: onMutateSettle
-        });
-    };
-    const { register, handleSubmit, formState, control } = useForm<Employee>({
+    const { register, handleSubmit, formState, control, reset } = useForm<Employee>({
         defaultValues: {
             fullName: baseEmployee?.fullName || undefined,
             birthDate: baseEmployee?.birthDate || undefined,
@@ -66,12 +41,45 @@ const EmployeeEditForm = (
             department: baseEmployee?.department || undefined
         }
     });
+
+    const updAffector = (e: Employee) =>
+        new Promise<Employee>((resolve) => {
+            setTimeout(() => {
+                const affectedEmpl = affector(e);
+                resolve(affectedEmpl);
+            }, 1500);
+        });
+    const mutation = useEmployeesMutation<Employee>(
+        updAffector
+    );
+
+    const isAddNew = !baseEmployee;
+
+    const mutationSettleHandler = (empl: Employee | undefined, error: Error | null) => {
+        setShowResult(true);
+        if (error) {
+            console.log("Error: " + error.message);
+        } else {
+            console.log("Success: " + empl?.fullName + " was updated. ID = " + empl?.id);
+            if (isAddNew) {
+                reset();
+            }
+        }
+    }
+
+    const formSubmitHandler = (editEmployee: Employee) => {
+        const employee = {...baseEmployee, ...editEmployee};
+        mutation.mutate(employee, {
+            onSettled: mutationSettleHandler
+        });
+    };
+
     const errors = formState.errors;
 
     const departments = createListCollection({items: depItems});
     return (
         <VStack maxW="md" mx="auto" mt={10} p={4} borderWidth={1} borderRadius="lg">
-            <form onSubmit={handleSubmit(submitHandler)}>
+            <form onSubmit={handleSubmit(formSubmitHandler)}>
                 <Field.Root invalid={!!errors.fullName} width="320px" >
                     <Field.Label>First name</Field.Label>
                     <Input {...register("fullName", {
@@ -164,10 +172,10 @@ const EmployeeEditForm = (
             <NotificationModal
                 isOpen={showResult}
                 onIsOpenChange={setShowResult}
-                title={`Employee ${baseEmployee? "update": "add"} ${mutation.isError? "error" :"confirmation"}`}
+                title={`Employee ${isAddNew? "add": "update"} ${mutation.isError? "error" :"confirmation"}`}
                 description={mutation.isError? `Error occurred while performing the operation: ${mutation.error?.message || "Network error"}`:
-                    `Employee ${mutation.data?.fullName} record successfully ${baseEmployee? "updated": "added"}.`}
-                onConfirm={()=> {}}
+                    `Employee ${mutation.data?.fullName} record successfully ${isAddNew? "added": "updated"}.`}
+                onConfirm={() => {}}
                 isError={mutation.isError}
             />
         </VStack>

@@ -6,16 +6,22 @@ import {useColorModeValue} from "./ui/color-mode.tsx";
 interface EmployeeEditWindowProps {
     affector: (e: Employee) => Promise<Employee>;
     employee: Employee;
+    isDisabled: boolean;
 }
 
 const EmployeeEditWindow = (
-    {affector, employee}: EmployeeEditWindowProps
+    {affector, employee, isDisabled}: EmployeeEditWindowProps
 ) => {
     const bgColor = useColorModeValue("purple.500", "purple.300");
     return (
         <Dialog.Root placement="top" role="dialog">
             <Dialog.Trigger asChild>
-                <Button variant="outline" size="sm" background={bgColor} color = "black">
+                <Button variant="outline"
+                        size="sm"
+                        background={bgColor}
+                        color = "black"
+                        disabled = {isDisabled}
+                >
                     Edit
                 </Button>
             </Dialog.Trigger>

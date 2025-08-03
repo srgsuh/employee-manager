@@ -61,6 +61,7 @@ const EmployeeTable: FC<Props> = ({apiClient}) => {
                                                      onConfirm={() => mutationDelete.mutate(e.id!)}
                                         />
                                         <EmployeeEditWindow
+                                            isDisabled={mutationDelete.isPending}
                                             affector={
                                             (empl: Employee) => {
                                                 const updater: Updater = {

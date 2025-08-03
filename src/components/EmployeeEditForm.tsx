@@ -64,6 +64,11 @@ const EmployeeEditForm = (
             if (isAddNew) {
                 reset();
             }
+            else {
+                reset((formValues)=>({...formValues}), {
+                    keepValues: true
+                });
+            }
         }
     }
 
@@ -120,7 +125,7 @@ const EmployeeEditForm = (
                                 </Select.Control>
                                 <Portal>
                                     <Select.Positioner>
-                                        <Select.Content>
+                                        <Select.Content zIndex="100000">
                                             {departments.items.map((dep) => (
                                                 <Select.Item item={dep} key={dep.value}>
                                                     {dep.label}
@@ -163,6 +168,7 @@ const EmployeeEditForm = (
                 <HStack>
                     <Button
                         focusRingColor="red.500"
+                        disabled={!formState.isDirty}
                         type="submit"
                         loading={mutation.isPending}
                         loadingText="Updating">Submit</Button>

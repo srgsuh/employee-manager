@@ -1,10 +1,11 @@
-import type {ApiClient} from "../services/ApiClient.ts";
+import type {ApiClient, Updater} from "../services/ApiClient.ts";
 import type {FC} from "react";
 import {useQuery} from "@tanstack/react-query";
 import type {Employee} from "../model/dto-types.ts";
 import {Avatar, Spinner, Stack, Table, Text} from "@chakra-ui/react";
 import AlertDialog from "./AlertDialog.tsx";
 import useEmployeesMutation from "../hooks/useEmployeesMutation.ts";
+import EmployeeEditWindow from "./EmployeeEditWindow.tsx";
 
 type Props = {
     apiClient: ApiClient;
@@ -37,7 +38,7 @@ const EmployeeTable: FC<Props> = ({apiClient}) => {
                             <Table.ColumnHeader>Department</Table.ColumnHeader>
                             <Table.ColumnHeader>Birthdate</Table.ColumnHeader>
                             <Table.ColumnHeader>Salary</Table.ColumnHeader>
-                            <Table.ColumnHeader></Table.ColumnHeader>
+                            <Table.ColumnHeader>Editing</Table.ColumnHeader>
                         </Table.Row>
                     </Table.Header>
 
@@ -58,6 +59,17 @@ const EmployeeTable: FC<Props> = ({apiClient}) => {
                                                  isDisabled={mutationDelete.isPending}
                                                  onConfirm={() => mutationDelete.mutate(e.id!)}>
                                     </AlertDialog>
+                                    <EmployeeEditWindow
+                                        affector={
+                                        (empl: Employee) => {
+                                            const updater: Updater = {
+                                              id: e.id!,
+                                              fields: {...e, ...empl}
+                                            };
+                                            return apiClient.updateEmployee(updater);
+                                        }}
+                                        employee={e}
+                                    />
                                 </Table.Cell>
                             </Table.Row>
                         ))}

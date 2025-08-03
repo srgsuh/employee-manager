@@ -2,7 +2,7 @@ import type {ApiClient, Updater} from "../services/ApiClient.ts";
 import type {FC} from "react";
 import {useQuery} from "@tanstack/react-query";
 import type {Employee} from "../model/dto-types.ts";
-import {Avatar, Spinner, Stack, Table, Text} from "@chakra-ui/react";
+import {Avatar, HStack, Spinner, Stack, Table, Text} from "@chakra-ui/react";
 import AlertDialog from "./AlertDialog.tsx";
 import useEmployeesMutation from "../hooks/useEmployeesMutation.ts";
 import EmployeeEditWindow from "./EmployeeEditWindow.tsx";
@@ -38,7 +38,7 @@ const EmployeeTable: FC<Props> = ({apiClient}) => {
                             <Table.ColumnHeader>Department</Table.ColumnHeader>
                             <Table.ColumnHeader>Birthdate</Table.ColumnHeader>
                             <Table.ColumnHeader>Salary</Table.ColumnHeader>
-                            <Table.ColumnHeader>Editing</Table.ColumnHeader>
+                            <Table.ColumnHeader>Admin options</Table.ColumnHeader>
                         </Table.Row>
                     </Table.Header>
 
@@ -55,21 +55,23 @@ const EmployeeTable: FC<Props> = ({apiClient}) => {
                                 <Table.Cell>{e.birthDate}</Table.Cell>
                                 <Table.Cell textAlign="end">{e.salary}</Table.Cell>
                                 <Table.Cell>
-                                    <AlertDialog itemDescription={`the record of employee ${e.fullName}`}
-                                                 isDisabled={mutationDelete.isPending}
-                                                 onConfirm={() => mutationDelete.mutate(e.id!)}>
-                                    </AlertDialog>
-                                    <EmployeeEditWindow
-                                        affector={
-                                        (empl: Employee) => {
-                                            const updater: Updater = {
-                                              id: e.id!,
-                                              fields: {...e, ...empl}
-                                            };
-                                            return apiClient.updateEmployee(updater);
-                                        }}
-                                        employee={e}
-                                    />
+                                    <HStack justify={"space-around"}>
+                                        <AlertDialog itemDescription={`the record of employee ${e.fullName}`}
+                                                     isDisabled={mutationDelete.isPending}
+                                                     onConfirm={() => mutationDelete.mutate(e.id!)}
+                                        />
+                                        <EmployeeEditWindow
+                                            affector={
+                                            (empl: Employee) => {
+                                                const updater: Updater = {
+                                                  id: e.id!,
+                                                  fields: {...e, ...empl}
+                                                };
+                                                return apiClient.updateEmployee(updater);
+                                            }}
+                                            employee={e}
+                                        />
+                                    </HStack>
                                 </Table.Cell>
                             </Table.Row>
                         ))}

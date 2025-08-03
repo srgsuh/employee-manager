@@ -1,6 +1,7 @@
 import {Button, CloseButton, Dialog, Portal} from "@chakra-ui/react";
 import type {Employee} from "../model/dto-types.ts";
 import EmployeeEditForm from "./EmployeeEditForm.tsx";
+import {useColorModeValue} from "./ui/color-mode.tsx";
 
 interface EmployeeEditWindowProps {
     affector: (e: Employee) => Promise<Employee>;
@@ -10,12 +11,11 @@ interface EmployeeEditWindowProps {
 const EmployeeEditWindow = (
     {affector, employee}: EmployeeEditWindowProps
 ) => {
+    const bgColor = useColorModeValue("purple.500", "purple.300");
     return (
-        <Dialog.Root size="cover"
-                     placement="center"
-                     trapFocus={false}>
+        <Dialog.Root placement="top" role="dialog">
             <Dialog.Trigger asChild>
-                <Button variant="outline" size="sm">
+                <Button variant="outline" size="sm" background={bgColor} color = "black">
                     Edit
                 </Button>
             </Dialog.Trigger>
@@ -24,7 +24,7 @@ const EmployeeEditWindow = (
                 <Dialog.Positioner>
                     <Dialog.Content>
                         <Dialog.Header>
-                            <Dialog.Title>Dialog Title</Dialog.Title>
+                            <Dialog.Title>Edit employee record</Dialog.Title>
                             <Dialog.CloseTrigger asChild>
                                 <CloseButton size="sm" />
                             </Dialog.CloseTrigger>

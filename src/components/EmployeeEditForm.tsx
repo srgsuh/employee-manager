@@ -42,15 +42,8 @@ const EmployeeEditForm = (
         }
     });
 
-    const updAffector = (e: Employee) =>
-        new Promise<Employee>((resolve) => {
-            setTimeout(() => {
-                const affectedEmpl = affector(e);
-                resolve(affectedEmpl);
-            }, 1500);
-        });
     const mutation = useEmployeesMutation<Employee>(
-        updAffector
+        affector
     );
 
     const isAddNew = !baseEmployee;

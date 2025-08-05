@@ -44,43 +44,39 @@ const NumberFilter: FC<NumberFilterProps> = ({title}) => {
                 <VStack asChild>
                     <form onSubmit={handleSubmit(submitHandler)} name={"Range"}>
                         <HStack>
-                            <label htmlFor={"from"}>{`${title} >=`}</label>
-                            <VStack>
-                                <Box asChild borderWidth={"1px"} borderRadius={"sm"}>
-                                    <input id={"from"} type="number" {...register("from",
-                                        {
-                                            required: {value: true, message: "Value is required"}
-                                            , min: {value: min, message: `Value must be greater or equal to ${min}`}
-                                            , max: {value: max, message: `Value must be less or equal to ${max}`}
-                                            , valueAsNumber: true
-                                        })
-                                    }
-                                    />
-                                </Box>
-                                {errors && <Text as={"div"}>{errors.from?.message}</Text>}
-                            </VStack>
+                            <label htmlFor={"from"}>lower</label>
+                            <Box asChild borderWidth={"1px"} borderRadius={"sm"}>
+                                <input id={"from"} type="number" {...register("from",
+                                    {
+                                        required: {value: true, message: "Value is required"}
+                                        , min: {value: min, message: `Value must be greater or equal to ${min}`}
+                                        , max: {value: max, message: `Value must be less or equal to ${max}`}
+                                        , valueAsNumber: true
+                                    })
+                                }
+                                />
+                            </Box>
                         </HStack>
+                        {errors && <Text color="red" fontSize={"2xs"}>{errors.from?.message}</Text>}
                         <HStack>
-                            <label htmlFor={"to"}>{`${title} <=`}</label>
-                            <VStack>
-                                <Box asChild borderWidth={"1px"} borderRadius={"sm"}>
-                                    <input id={"to"} type="number" {...register("to",
-                                        {
-                                            required: {value: true, message: "Value is required"},
-                                            valueAsNumber: true,
-                                            max: {value: max, message: `Value must be less or equal to ${max}`},
-                                            validate: (value, formValues) => {
-                                                if (value < formValues.to) {
-                                                    return `Value must be greater or equal to the ${formValues.to}`
-                                                }
-                                                return undefined;
+                            <label htmlFor={"to"}>upper</label>
+                            <Box asChild borderWidth={"1px"} borderRadius={"sm"}>
+                                <input id={"to"} type="number" {...register("to",
+                                    {
+                                        required: {value: true, message: "Value is required"},
+                                        valueAsNumber: true,
+                                        max: {value: max, message: `Value must be less or equal to ${max}`},
+                                        validate: (value, formValues) => {
+                                            if (value < formValues.from) {
+                                                return `Value must exceed lower value`
                                             }
+                                            return undefined;
                                         }
-                                    )}/>
-                                </Box>
-                                {errors && <Text as={"div"}>{errors.to?.message}</Text>}
-                            </VStack>
+                                    }
+                                )}/>
+                            </Box>
                         </HStack>
+                        {errors && <Text color="red" fontSize={"2xs"}>{errors.to?.message}</Text>}
                         <HStack justify={"space-around"}>
                             <IconButton variant={"outline"}
                                         size={"xs"}

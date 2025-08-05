@@ -7,7 +7,7 @@ interface Props {
     zIndex?: number | "auto",
 }
 
-const MotionElement: FC<Props> = ({duration = 0.54, zIndex = "auto", children}) => {
+const MotionElement: FC<Props> = ({duration = 0.36, zIndex = "auto", children}) => {
     return (
         <motion.div initial={{opacity: 0, scale: 0, zIndex: zIndex}}
                     animate={{opacity: 1, scale: 1, zIndex: zIndex}}

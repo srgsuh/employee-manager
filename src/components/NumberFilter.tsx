@@ -5,6 +5,7 @@ import {type FC, useState} from "react";
 import {ImCancelCircle} from "react-icons/im";
 import {minAge, maxAge, minSalary, maxSalary} from "../config/employees-config.json"
 import useEmployeeFilter, {type EmployeeFilter} from "../state-management/store.tsx";
+import {useColorModeValue} from "./ui/color-mode.tsx";
 
 interface NumberFilterProps {
     title: "Age" | "Salary",
@@ -33,13 +34,15 @@ const NumberFilter: FC<NumberFilterProps> = ({title}) => {
         defaultValues: {from, to}
     });
 
+    const borderColor = useColorModeValue("gray.200", "gray.700");
+
     const submitHandler = (fv: FormValues) => {
         onSubmit({from: fv.from, to: fv.to});
         setIsEditing(false);
     }
 
     return (
-        <>
+        <Box border={"1px solid"} borderRadius={"md"} borderColor={borderColor} p={"1"}>
             {isEditing ? (
                 <VStack asChild>
                     <form onSubmit={handleSubmit(submitHandler)} name={"Range"}>
@@ -97,7 +100,7 @@ const NumberFilter: FC<NumberFilterProps> = ({title}) => {
                 </VStack>
             ) : (
                 <HStack>
-                    <Text>{`${title}: from ${from} to ${to}`}</Text>
+                    <Text>{`${title}: ${from} - ${to}`}</Text>
                     <IconButton size={"xs"}
                                 variant={"ghost"}
                                 onClick={() => setIsEditing(true)}
@@ -108,7 +111,7 @@ const NumberFilter: FC<NumberFilterProps> = ({title}) => {
 
             )
             }
-        </>
+        </Box>
     );
 };
 

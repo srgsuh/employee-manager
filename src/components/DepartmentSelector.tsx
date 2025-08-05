@@ -36,7 +36,7 @@ const DepartmentSelector = () => {
                    onOpenChange={(details) => setIsOpen(details.open)}
         >
             <Menu.Trigger asChild>
-                <Button variant="outline" size="sm" minW={200}>
+                <Button variant="outline" size="md" minW={135}>
                     {department || defaultItem.department}
                     { isOpen? <MotionElement ><FaChevronUp /></MotionElement>
                         : <FaChevronDown />}

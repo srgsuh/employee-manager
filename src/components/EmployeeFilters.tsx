@@ -6,7 +6,7 @@ import DepartmentSelector from "./DepartmentSelector.tsx";
 const EmployeeFilters = () => {
 
     return (
-        <HStack justify={"space-around"} p={2}>
+        <HStack justify={"space-around"} p={2} w={"100%"}>
             <DepartmentSelector></DepartmentSelector>
             <NumberFilter title={"Age"}/>
             <NumberFilter title={"Salary"}/>

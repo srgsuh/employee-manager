@@ -14,19 +14,15 @@ import {getAgeFromDate} from "./utils/math.ts";
 import useEmployeesMutation from "../hooks/useEmployeesMutation.ts";
 import {useState} from "react";
 import NotificationModal from "./NotificationModal.tsx";
+import {minFullNameLength, minAge, maxAge, minSalary, maxSalary, departments} from "../config/employees-config.json";
+
 
 interface EmployeeEditFormProps {
     affector: (e: Employee) => Promise<Employee>;
     baseEmployee?: Employee;
 }
 
-const depItems: {label: string, value: string}[] = [
-    {label: "IT", value: "IT"},
-    {label: "QA", value: "QA"},
-    {label: "HR", value: "HR"},
-    {label: "Sales", value: "Sales"},
-    {label: "Finance", value: "Finance"},
-]
+const depItems: {label: string, value: string}[] = departments.map((d) => ({label: d, value: d}));
 
 const EmployeeEditForm = (
     {affector, baseEmployee}: EmployeeEditFormProps
@@ -82,7 +78,7 @@ const EmployeeEditForm = (
                     <Field.Label>First name</Field.Label>
                     <Input {...register("fullName", {
                         required: {value: true, message: "Full name is required"},
-                        minLength: {value: 5, message: "Full name must be at least 5 characters long"}})}
+                        minLength: {value: minFullNameLength, message: `Full name must be at least ${minFullNameLength} characters long`}})}
                            variant="outline"
                            css={{ "--focus-color": "blue" }}/>
                     <Field.ErrorText>{errors?.fullName?.message}</Field.ErrorText>
@@ -140,7 +136,15 @@ const EmployeeEditForm = (
                     <Input {...register("birthDate", {
                         required: {value: true, message: "Birthdate is required"},
                                 validate: (date) => {
-                                    return getAgeFromDate(date) < 18? "Employee's age must be greater then 18": undefined;
+                                    const age = getAgeFromDate(date);
+                                    let out: string | undefined = undefined;
+                                    if (age < minAge) {
+                                        out = `Employee's age must be greater then ${minAge}`;
+                                    }
+                                    else if (age > maxAge) {
+                                        out = `Employee's age must be less then ${maxAge}`;
+                                    }
+                                    return out;
                                 }})
                             } variant="outline" type={"date"} css={{ "--focus-color": "blue" }}/>
                     <Field.ErrorText>{errors.birthDate?.message}</Field.ErrorText>
@@ -149,7 +153,8 @@ const EmployeeEditForm = (
                     <Field.Label>Salary</Field.Label>
                     <Input {...register("salary", {
                         required: {value: true, message: "Salary is required"},
-                        min: {value: 20_000, message: "Salary must be greater then 20_000"}
+                        min: {value: minSalary, message: `Salary must be greater then ${minSalary}`},
+                        max: {value: maxSalary, message: `Salary must be less then ${maxSalary}`}
                     })}
                            variant="outline"
                            type={"number"}

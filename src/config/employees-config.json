@@ -4,5 +4,6 @@
   "maxSalary": 100000,
   "minAge": 18,
   "maxAge": 81,
+  "minFullNameLength": 5,
   "pageSize": 6
 }

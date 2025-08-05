@@ -1,0 +1,8 @@
+{
+  "departments": ["IT", "QA", "HR", "Finance", "Sales"],
+  "minSalary": 10000,
+  "maxSalary": 100000,
+  "minAge": 18,
+  "maxAge": 81,
+  "pageSize": 6
+}

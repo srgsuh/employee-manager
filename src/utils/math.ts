@@ -9,6 +9,12 @@ export function getAgeFromDate(dateStr: string): number {
         (today.valueOf() > bDateThisYear.valueOf() ? 0 : -1);
 }
 
+export function getBirthDateFromAge(age: number): string {
+    const today = new Date();
+    const birthDate = new Date(today.getFullYear() - age, today.getMonth(), today.getDate());
+    return birthDate.toISOString().slice(0, 10);
+}
+
 export function randomSubarray<T>(array: T[], length: number): T[] {
     const indices = generateRandomSequence(length, 0, array.length - 1);
     return indices.map(i => array[i]);

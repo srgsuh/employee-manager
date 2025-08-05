@@ -3,7 +3,7 @@ import type {Employee} from "../model/dto-types.ts";
 import StatisticsPage from "./StatisticsPage.tsx";
 import apiClient from "../services/ApiClientDB.ts";
 import LineDiagram from "../components/LineDiagram.tsx";
-import {aggregateEmployee, salaryReducer} from "../components/utils/employee_agg.ts";
+import {aggregateEmployee, salaryReducer} from "../utils/employee_agg.ts";
 
 
 const aggFunc: (e: Employee[]) => DiagramPoint[] =

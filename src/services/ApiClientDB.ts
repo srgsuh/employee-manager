@@ -3,6 +3,7 @@ import type {Employee, SearchObject} from "../model/dto-types.ts";
 import ApiTransportAxios from "./ApiTransportAxios.ts";
 import ApiTransportFetch from "./ApiTransportFetch.ts";
 import appConfig from "../config/config.ts";
+import {getBirthDateFromAge} from "../utils/math.ts";
 
 export interface ApiTransport {
     get<T>(endpoint: string, params?: Record<string, string>): Promise<T>;
@@ -20,10 +21,8 @@ class ApiClientDB implements ApiClient {
     }
 
     async getAll(searchObject?: SearchObject): Promise<Employee[]> {
-        if (searchObject) {
-            return Promise.reject(new Error('Not implemented yet'));
-        }
-        return this._apiTransport.get<Employee[]>('/employees');
+        const params = this._searchObjectToParams(searchObject);
+        return this._apiTransport.get<Employee[]>('/employees', params);
     }
 
     getEmployee(id: string): Promise<Employee | null> {
@@ -41,6 +40,30 @@ class ApiClientDB implements ApiClient {
 
     updateEmployee({id, fields}: Updater): Promise<Employee> {
         return this._apiTransport.patch<Employee>(`/employees/${id}`, fields);
+    }
+
+    _searchObjectToParams(searchObject?: SearchObject): Record<string, string> | undefined {
+        if (!searchObject) {
+            return undefined;
+        }
+        const params: Record<string, string> = {};
+        const {department, salaryFrom, salaryTo, ageFrom, ageTo} = searchObject;
+        if (department) {
+            params.department = department;
+        }
+        if (salaryFrom) {
+            params.salary_gte = salaryFrom.toString();
+        }
+        if (salaryTo) {
+            params.salary_lte = salaryTo.toString();
+        }
+        if (ageFrom) {
+            params.birthDate_lte = getBirthDateFromAge(ageFrom).toString();
+        }
+        if (ageTo) {
+            params.birthDate_gte = getBirthDateFromAge(ageTo).toString();
+        }
+        return params;
     }
 }
 

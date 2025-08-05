@@ -1,6 +1,6 @@
 import _ from "lodash";
-import type {Employee} from "../../model/dto-types.ts";
-import type {DiagramPoint} from "../../model/types.ts";
+import type {Employee} from "../model/dto-types.ts";
+import type {DiagramPoint} from "../model/types.ts";
 import {getAgeFromDate} from "./math.ts";
 
 type EmployeeReducer = (e: Employee) => number;

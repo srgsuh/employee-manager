@@ -1,7 +1,7 @@
 import type {ColoredDiagramPoint, DiagramPoint, DiagramProps} from "../model/types.ts";
 import {Chart, useChart} from "@chakra-ui/charts";
 import {Cell, Legend, Pie, PieChart, Tooltip} from "recharts";
-import {randomSubarray} from "./utils/math.ts";
+import {randomSubarray} from "../utils/math.ts";
 import {colors} from "../model/colors.ts";
 
 const coloringFun: (a: DiagramPoint[])=> ColoredDiagramPoint[] = (a) => {

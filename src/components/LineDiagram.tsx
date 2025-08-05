@@ -1,7 +1,7 @@
 import {Chart, useChart} from "@chakra-ui/charts";
 import {CartesianGrid, Line, LineChart, Tooltip, XAxis, YAxis} from "recharts";
 import type {DiagramProps} from "../model/types.ts";
-import {getRandomElement} from "./utils/math.ts";
+import {getRandomElement} from "../utils/math.ts";
 import {colors} from "../model/colors.ts";
 
 const LineDiagram = ({data, aggFunc, xLabel}: DiagramProps) => {

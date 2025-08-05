@@ -9,8 +9,8 @@ export interface Employee {
 
 export interface SearchObject {
     department?: string;
-    minSalary?: number;
-    maxSalary?: number;
-    minAge?: number;
-    maxAge?: number;
+    salaryFrom?: number;
+    salaryTo?: number;
+    ageFrom?: number;
+    ageTo?: number;
 }

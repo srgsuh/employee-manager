@@ -10,7 +10,7 @@ import {
     Select,
     VStack
 } from "@chakra-ui/react";
-import {getAgeFromDate} from "./utils/math.ts";
+import {getAgeFromDate} from "../utils/math.ts";
 import useEmployeesMutation from "../hooks/useEmployeesMutation.ts";
 import {useState} from "react";
 import NotificationModal from "./NotificationModal.tsx";
@@ -152,6 +152,7 @@ const EmployeeEditForm = (
                 <Field.Root invalid={!!errors.salary} width="320px">
                     <Field.Label>Salary</Field.Label>
                     <Input {...register("salary", {
+                        valueAsNumber: true,
                         required: {value: true, message: "Salary is required"},
                         min: {value: minSalary, message: `Salary must be greater then ${minSalary}`},
                         max: {value: maxSalary, message: `Salary must be less then ${maxSalary}`}

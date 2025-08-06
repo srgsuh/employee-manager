@@ -1,18 +1,36 @@
 import type {ApiClient, Updater} from "../services/ApiClient.ts";
 import type {FC} from "react";
-import type {Employee} from "../model/dto-types.ts";
+import type {Employee, SearchObject} from "../model/dto-types.ts";
 import {Avatar, HStack, Spinner, Stack, Table, Text} from "@chakra-ui/react";
 import AlertDialog from "./AlertDialog.tsx";
 import useEmployeesMutation from "../hooks/useEmployeesMutation.ts";
 import EmployeeEditWindow from "./EmployeeEditWindow.tsx";
 import useGetEmployees from "../hooks/useGetEmployees.ts";
+import useEmployeeFilter, {type EmployeeFilter} from "../state-management/store.tsx";
+import type {UseBoundStore} from "zustand/react";
+import type {StoreApi} from "zustand/vanilla";
+import _ from "lodash";
 
 type Props = {
     apiClient: ApiClient;
 }
 
+function buildSearchObject({department, ageTo, ageFrom, salaryTo, salaryFrom}: UseBoundStore<StoreApi<EmployeeFilter>>): SearchObject | undefined {
+    const departmentSearchObject: SearchObject = department ? {department} : {};
+    const ageToSearchObject: SearchObject = ageTo ? {ageTo} : {};
+    const ageFromSearchObject: SearchObject = ageFrom ? {ageFrom} : {};
+    const salaryToSearchObject: SearchObject = salaryTo ? {salaryTo} : {};
+    const salaryFromSearchObject: SearchObject = salaryFrom ? {salaryFrom} : {};
+
+    const searchObject: SearchObject = {...departmentSearchObject, ...ageToSearchObject, ...ageFromSearchObject, ...salaryToSearchObject, ...salaryFromSearchObject};
+
+    return _.isEmpty(searchObject) ? undefined : searchObject;
+}
+
 const EmployeeTable: FC<Props> = ({apiClient}) => {
-    const {isLoading, error, data} = useGetEmployees(apiClient.getAllQuery());
+    const state = useEmployeeFilter();
+    const searchObject = buildSearchObject(state);
+    const {isLoading, error, data} = useGetEmployees(apiClient.getAllQuery(searchObject));
 
     const mutationDelete = useEmployeesMutation<string>(
         (id) => apiClient.deleteEmployee(id)

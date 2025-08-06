@@ -21,23 +21,29 @@ interface NumberFilterVariables {
     to: number,
     min: number,
     max: number,
-    onSubmit: (values: { from: number, to: number }) => void,
+    handleRangeUpdate: (values: { from: number | null, to: number | null }) => void,
 }
 
 const NumberFilter: FC<NumberFilterProps> = ({title}) => {
     const [isEditing, setIsEditing] = useState<boolean>(false);
     const state = useEmployeeFilter();
 
-    const {from, to, min, max, onSubmit} = initVariables(title === "Age", state);
+    const {from, to, min, max, handleRangeUpdate} = initVariables(title === "Age", state);
 
-    const {handleSubmit, register, formState: {errors}} = useForm<FormValues>({
+    const {handleSubmit, register, formState: {errors}, reset} = useForm<FormValues>({
         defaultValues: {from, to}
     });
 
     const borderColor = useColorModeValue("gray.200", "gray.700");
 
     const submitHandler = (fv: FormValues) => {
-        onSubmit({from: fv.from, to: fv.to});
+        handleRangeUpdate({from: fv.from, to: fv.to});
+        setIsEditing(false);
+    }
+
+    const resetHandler = () => {
+        reset({from: min, to: max});
+        handleRangeUpdate({from: null, to: null});
         setIsEditing(false);
     }
 
@@ -88,9 +94,7 @@ const NumberFilter: FC<NumberFilterProps> = ({title}) => {
                                 <FaCheck/>
                             </IconButton>
                             <IconButton variant={"outline"}
-                                        onClick={() => {
-                                            setIsEditing(false)
-                                        }}
+                                        onClick={resetHandler}
                                         colorPalette={"red"}
                                         size={"xs"}>
                                 <ImCancelCircle/>
@@ -125,7 +129,7 @@ function initVariables(isAge: boolean, state: EmployeeFilter): NumberFilterVaria
             to: state.ageTo || maxAge,
             min: minAge,
             max: maxAge,
-            onSubmit: (values: { from: number, to: number }) => {
+            handleRangeUpdate: (values: { from: number | null, to: number | null }) => {
                 state.setAgeFrom(values.from);
                 state.setAgeTo(values.to);
             }
@@ -136,7 +140,7 @@ function initVariables(isAge: boolean, state: EmployeeFilter): NumberFilterVaria
             to: state.salaryTo || maxSalary,
             min: minSalary,
             max: maxSalary,
-            onSubmit: (values: { from: number, to: number }) => {
+            handleRangeUpdate: (values: { from: number | null, to: number | null }) => {
                 state.setSalaryFrom(values.from);
                 state.setSalaryTo(values.to);
             }

@@ -1,4 +1,4 @@
-import type {ApiClient, Updater} from "./ApiClient";
+import type {ApiClient, QueryVariables, Updater} from "./ApiClient";
 import type {Employee, SearchObject} from "../model/dto-types.ts";
 import ApiTransportAxios from "./ApiTransportAxios.ts";
 import ApiTransportFetch from "./ApiTransportFetch.ts";
@@ -20,8 +20,21 @@ class ApiClientDB implements ApiClient {
         this._apiTransport = apiTransport;
     }
 
+    getAllQuery(searchObject?: SearchObject): QueryVariables<Employee[]> {
+        const staleTime = appConfig.query.staleTime;
+        const params = this._searchObjectToParams(searchObject);
+        const queryFn = async () => this._getAll(params);
+        const queryKey = params? ["/employees", params]: ["/employees"];
+
+        return {queryFn, queryKey, staleTime};
+    }
+
     async getAll(searchObject?: SearchObject): Promise<Employee[]> {
         const params = this._searchObjectToParams(searchObject);
+        return this._getAll(params);
+    }
+
+    async _getAll(params?: Record<string, string>): Promise<Employee[]> {
         return this._apiTransport.get<Employee[]>('/employees', params);
     }
 

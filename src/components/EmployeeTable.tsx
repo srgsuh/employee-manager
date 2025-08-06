@@ -1,25 +1,19 @@
 import type {ApiClient, Updater} from "../services/ApiClient.ts";
 import type {FC} from "react";
-import {useQuery} from "@tanstack/react-query";
 import type {Employee} from "../model/dto-types.ts";
 import {Avatar, HStack, Spinner, Stack, Table, Text} from "@chakra-ui/react";
 import AlertDialog from "./AlertDialog.tsx";
 import useEmployeesMutation from "../hooks/useEmployeesMutation.ts";
 import EmployeeEditWindow from "./EmployeeEditWindow.tsx";
+import useGetEmployees from "../hooks/useGetEmployees.ts";
 
 type Props = {
     apiClient: ApiClient;
 }
 
 const EmployeeTable: FC<Props> = ({apiClient}) => {
-    const queryKey = ["/employees"];
-    const {isLoading, error, data} = useQuery<Employee[], Error>(
-        {
-            queryKey,
-            queryFn: () => apiClient.getAll(),
-            staleTime: 3_600_000
-        }
-    );
+    const {isLoading, error, data} = useGetEmployees(apiClient.getAllQuery());
+
     const mutationDelete = useEmployeesMutation<string>(
         (id) => apiClient.deleteEmployee(id)
     );

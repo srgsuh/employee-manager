@@ -104,6 +104,7 @@ const NumberFilter: FC<NumberFilterProps> = ({title}) => {
                     <IconButton size={"xs"}
                                 variant={"ghost"}
                                 onClick={() => setIsEditing(true)}
+                                colorPalette={"purple"}
                     >
                         <FaRegEdit/>
                     </IconButton>

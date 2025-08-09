@@ -4,6 +4,7 @@ import ApiTransportAxios from "./ApiTransportAxios.ts";
 import ApiTransportFetch from "./ApiTransportFetch.ts";
 import appConfig from "../config/config.ts";
 import {getBirthDateFromAge} from "../utils/math.ts";
+import _ from "lodash";
 
 export interface ApiTransport {
     get<T>(endpoint: string, params?: Record<string, string>): Promise<T>;
@@ -56,27 +57,18 @@ class ApiClientDB implements ApiClient {
     }
 
     _searchObjectToParams(searchObject?: SearchObject): Record<string, string> | undefined {
-        if (!searchObject) {
+        if (!searchObject || _.isEmpty(searchObject)) {
             return undefined;
         }
-        const params: Record<string, string> = {};
         const {department, salaryFrom, salaryTo, ageFrom, ageTo} = searchObject;
-        if (department) {
-            params.department = department;
+
+        return {
+            ...(department && {department}),
+            ...(salaryFrom && {salary_gte: salaryFrom.toString()}),
+            ...(salaryTo && {salary_lte: salaryTo.toString()}),
+            ...(ageFrom && {birthDate_lte: getBirthDateFromAge(ageFrom)}),
+            ...(ageTo && {birthDate_gte: getBirthDateFromAge(ageTo)})
         }
-        if (salaryFrom) {
-            params.salary_gte = salaryFrom.toString();
-        }
-        if (salaryTo) {
-            params.salary_lte = salaryTo.toString();
-        }
-        if (ageFrom) {
-            params.birthDate_lte = getBirthDateFromAge(ageFrom).toString();
-        }
-        if (ageTo) {
-            params.birthDate_gte = getBirthDateFromAge(ageTo).toString();
-        }
-        return params;
     }
 }
 

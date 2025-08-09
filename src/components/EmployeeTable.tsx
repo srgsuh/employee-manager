@@ -7,22 +7,20 @@ import useEmployeesMutation from "../hooks/useEmployeesMutation.ts";
 import EmployeeEditWindow from "./EmployeeEditWindow.tsx";
 import useGetEmployees from "../hooks/useGetEmployees.ts";
 import useEmployeeFilter, {type EmployeeFilter} from "../state-management/store.tsx";
-import type {UseBoundStore} from "zustand/react";
-import type {StoreApi} from "zustand/vanilla";
 import _ from "lodash";
 
 type Props = {
     apiClient: ApiClient;
 }
 
-function buildSearchObject({department, ageTo, ageFrom, salaryTo, salaryFrom}: UseBoundStore<StoreApi<EmployeeFilter>>): SearchObject | undefined {
-    const departmentSearchObject: SearchObject = department ? {department} : {};
-    const ageToSearchObject: SearchObject = ageTo ? {ageTo} : {};
-    const ageFromSearchObject: SearchObject = ageFrom ? {ageFrom} : {};
-    const salaryToSearchObject: SearchObject = salaryTo ? {salaryTo} : {};
-    const salaryFromSearchObject: SearchObject = salaryFrom ? {salaryFrom} : {};
-
-    const searchObject: SearchObject = {...departmentSearchObject, ...ageToSearchObject, ...ageFromSearchObject, ...salaryToSearchObject, ...salaryFromSearchObject};
+function buildSearchObject({department, ageTo, ageFrom, salaryTo, salaryFrom}: EmployeeFilter): SearchObject | undefined {
+    const searchObject = {
+        ...(department && {department}),
+        ...(ageTo && {ageTo}),
+        ...(ageFrom && {ageFrom}),
+        ...(salaryTo && {salaryTo}),
+        ...(salaryFrom && {salaryFrom})
+    }
 
     return _.isEmpty(searchObject) ? undefined : searchObject;
 }

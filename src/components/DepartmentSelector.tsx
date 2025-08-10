@@ -3,7 +3,7 @@ import MotionElement from "./MotionElement.tsx";
 import {FaChevronDown, FaChevronUp} from "react-icons/fa";
 import {departments} from "../config/employees-config.json";
 import {useState} from "react";
-import useEmployeeFilter from "../state-management/store.tsx";
+import useEmployeeFilter from "../state-management/store.ts";
 
 interface MenuItem {
     value: string;

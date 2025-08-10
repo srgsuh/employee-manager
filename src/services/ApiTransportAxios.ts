@@ -1,4 +1,4 @@
-import type {ApiTransport} from "./ApiClientDB.ts"
+import type {ApiTransport} from "./ApiTransport.ts"
 import axios, {type AxiosInstance, type AxiosRequestConfig} from "axios";
 import appConfig from "../config/config.ts";
 

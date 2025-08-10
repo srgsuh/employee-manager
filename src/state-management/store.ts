@@ -1,4 +1,19 @@
 import {create} from "zustand";
+import type {UserData} from "../services/AuthClient.ts";
+
+export interface AuthData {
+    userData: UserData | null;
+    login: (userData: UserData) => void;
+    logout: () => void;
+}
+
+export const useAuthData = create<AuthData>(
+    set => ({
+        userData: null,
+        login: (userData: UserData) => set({userData}),
+        logout: () => set({userData: null}),
+    })
+);
 
 export interface EmployeeFilter {
     department: string | null;

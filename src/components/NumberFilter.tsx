@@ -4,7 +4,7 @@ import {FaCheck, FaRegEdit} from "react-icons/fa";
 import {type FC, useState} from "react";
 import {ImCancelCircle} from "react-icons/im";
 import {minAge, maxAge, minSalary, maxSalary} from "../config/employees-config.json"
-import useEmployeeFilter, {type EmployeeFilter} from "../state-management/store.tsx";
+import useEmployeeFilter, {type EmployeeFilter} from "../state-management/store.ts";
 import {useColorModeValue} from "./ui/color-mode.tsx";
 
 interface NumberFilterProps {

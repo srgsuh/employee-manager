@@ -6,7 +6,7 @@ import AlertDialog from "./AlertDialog.tsx";
 import useEmployeesMutation from "../hooks/useEmployeesMutation.ts";
 import EmployeeEditWindow from "./EmployeeEditWindow.tsx";
 import useGetEmployees from "../hooks/useGetEmployees.ts";
-import useEmployeeFilter, {type EmployeeFilter} from "../state-management/store.tsx";
+import useEmployeeFilter, {type EmployeeFilter} from "../state-management/store.ts";
 import _ from "lodash";
 
 type Props = {

@@ -1,4 +1,4 @@
-import type {ApiTransport} from "./ApiClientDB.ts";
+import type {ApiTransport} from "./ApiTransport.ts";
 import appConfig from "../config/config.ts";
 
 const baseUrl = appConfig.db.baseURL;

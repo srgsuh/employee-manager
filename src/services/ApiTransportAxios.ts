@@ -5,6 +5,7 @@ import appConfig from "../config/config.ts";
 
 export default class ApiTransportAxios implements ApiTransport {
     private _instance: AxiosInstance;
+    private _token: string | undefined;
 
     constructor() {
         this._instance = axios.create({
@@ -14,6 +15,10 @@ export default class ApiTransportAxios implements ApiTransport {
                 'Content-Type': 'application/json'
             }
         });
+    }
+
+    setToken(token: string): void {
+        this._token = token;
     }
 
     async get<T>(endpoint: string, params?: Record<string, string>): Promise<T> {
@@ -42,6 +47,10 @@ export default class ApiTransportAxios implements ApiTransport {
     }
 
     private buildParameters(params?: Record<string, string>): AxiosRequestConfig | undefined {
+        if (this._token) {
+            const token = this._token;
+            return params ? {params, headers: {Authorization: `Bearer ${token}`}} : {headers: {Authorization: `Bearer ${token}`}};
+        }
         return params ? {params} : undefined;
     }
 

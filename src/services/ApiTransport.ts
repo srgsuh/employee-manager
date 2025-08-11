@@ -7,6 +7,7 @@ export interface ApiTransport {
     delete<T>(endpoint: string, params?: Record<string, string>): Promise<T>;
     post<T>(endpoint: string, data: unknown, params?: Record<string, string>): Promise<T>
     patch<T>(endpoint: string, data: unknown, params?: Record<string, string>): Promise<T>;
+    setToken(token: string): void;
 }
 
 export const apiTransport = appConfig.db.transport === 'axios' ?

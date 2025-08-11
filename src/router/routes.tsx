@@ -5,9 +5,11 @@ import AgeStatsPage from "../pages/AgeStatsPage.tsx";
 import DepartmentStatsPage from "../pages/DepartmentStatsPage.tsx";
 import SalaryStatsPage from "../pages/SalaryStatsPage.tsx";
 import Layout from "../pages/Layout.tsx";
+import LoginPage from "../pages/LoginPage.tsx";
 
 const router = createBrowserRouter([
     {path: '/', element: <Layout />, children: [
+        {path: 'login', element: <LoginPage/>},
         {path: '', element: <HomePage />},
         {path: 'add', element: <AddEmployeePage />},
         {path: 'statistics', children: [

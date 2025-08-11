@@ -24,6 +24,10 @@ const BASE_REQUEST = {
 };
 
 export default class ApiTransportFetch implements ApiTransport {
+    _token: string | undefined;
+    setToken(token: string): void {
+        this._token = token;
+    }
     patch<T>(endpoint: string, data: unknown, params?: Record<string, string>): Promise<T> {
         const url = createUrl(endpoint, params);
         const addRequest = {
@@ -57,7 +61,8 @@ export default class ApiTransportFetch implements ApiTransport {
         const id = setTimeout(() => controller.abort(), timeout);
         try {
             const signal = {signal: controller.signal};
-            const request = {...signal, ...BASE_REQUEST, ...addRequest};
+            const baseRequest = this._token ? {...BASE_REQUEST, headers: {...BASE_REQUEST.headers, Authorization: `Bearer ${this._token}`}} : BASE_REQUEST;
+            const request = {...signal, ...baseRequest, ...addRequest};
 
             const response = await fetch(url, request);
             if (!response.ok) {

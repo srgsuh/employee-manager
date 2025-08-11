@@ -9,6 +9,10 @@ import _ from "lodash";
 class ApiClientDB implements ApiClient {
     _apiTransport: ApiTransport;
 
+    setToken(token: string): void {
+        this._apiTransport.setToken(token);
+    }
+
     constructor(apiTransport: ApiTransport) {
         console.log(`ApiClientDB construct using transport: ${apiTransport?.constructor?.name}`);
         this._apiTransport = apiTransport;

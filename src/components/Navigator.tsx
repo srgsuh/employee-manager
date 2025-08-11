@@ -7,6 +7,11 @@ const Navigator = () => {
     return (
         <HStack justify="space-between" p={2}>
             <Button variant="ghost" size="sm" minW={200} asChild>
+                <RouterLink to = "/login">
+                    Login
+                </RouterLink>
+            </Button>
+            <Button variant="ghost" size="sm" minW={200} asChild>
                 <RouterLink to = "/">
                 Home
                 </RouterLink>

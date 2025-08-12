@@ -22,6 +22,7 @@ export default class ApiTransportAxios implements ApiTransport {
                 return res;
             },
             (error: AxiosError) => {
+                console.error(`Axios error: ${JSON.stringify(error.toJSON())}`);
                 if (error.response?.status === 401) {
                     this._logout?.();
                     this.setAuth(null, null);

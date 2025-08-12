@@ -14,7 +14,6 @@ const LoginForm: FC<Props> = ({submitter}) => {
         const isSuccess = await submitter(data);
         if (isSuccess) {
             reset();
-
         }
         else {
             setIsAlert(true);
@@ -29,7 +28,6 @@ const LoginForm: FC<Props> = ({submitter}) => {
                     <Input {...register("email",
                         {required: {value: true, message: "Email is required"}})
                     } onFocus={() =>{
-                        resetField("email");
                         setIsAlert(false);
                     }}/>
                     <Field.ErrorText>{errors.email?.message}</Field.ErrorText>
@@ -46,7 +44,7 @@ const LoginForm: FC<Props> = ({submitter}) => {
                     <Field.ErrorText>{errors.password?.message}</Field.ErrorText>
                 </Field.Root>
 
-                <Button type="submit">Submit</Button>
+                <Button type="submit" w={"100%"}>Submit</Button>
                 {isAlert && <Alert.Root status="error">
                     <Alert.Indicator />
                     <Alert.Title>Wrong credentials</Alert.Title>

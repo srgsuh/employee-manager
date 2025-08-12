@@ -1,16 +1,25 @@
-import {Button, HStack} from "@chakra-ui/react";
+import {Box, Button, HStack, Text} from "@chakra-ui/react";
 import {NavLink as RouterLink} from "react-router-dom";
 import {ColorModeButton} from "./ui/color-mode.tsx";
 import StatisticsSelector from "./StatisticsSelector.tsx";
+import type {FC} from "react";
 
-const Navigator = () => {
+interface Props {
+    logout: () => void;
+    userName?: string;
+}
+
+function takeName(email: string): string {
+    return email.split("@")[0];
+}
+
+const Navigator: FC<Props> = ({logout, userName}) => {
+    const name = userName? takeName(userName): "Stranger";
     return (
         <HStack justify="space-between" p={2}>
-            <Button variant="ghost" size="sm" minW={200} asChild>
-                <RouterLink to = "/login">
-                    Login
-                </RouterLink>
-            </Button>
+            <Box>
+                <Text>Welcome: {name}</Text>
+            </Box>
             <Button variant="ghost" size="sm" minW={200} asChild>
                 <RouterLink to = "/">
                 Home
@@ -23,6 +32,9 @@ const Navigator = () => {
             </Button>
             <StatisticsSelector>
             </StatisticsSelector>
+            <Button variant="ghost" size="sm" minW={200} onClick = {logout}>
+                Logout
+            </Button>
             <ColorModeButton size={"md"}/>
         </HStack>
     );

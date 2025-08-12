@@ -1,48 +1,63 @@
 import type {ApiTransport} from "./ApiTransport.ts"
-import axios, {type AxiosInstance, type AxiosRequestConfig} from "axios";
+import axios, {type AxiosError, type AxiosInstance, type AxiosRequestConfig, type AxiosResponse} from "axios";
 import appConfig from "../config/config.ts";
 
 
 export default class ApiTransportAxios implements ApiTransport {
-    private _instance: AxiosInstance;
-    private _token: string | undefined;
+    private _axios: AxiosInstance;
+    private _token: string | null = null;
+    private _logout: (() => void) | null = null;
 
     constructor() {
-        this._instance = axios.create({
+        this._axios = axios.create({
             baseURL: appConfig.db.baseURL,
             timeout: appConfig.db.timeout,
             headers: {
                 'Content-Type': 'application/json'
             }
         });
+
+        this._axios.interceptors.response.use(
+            (res: AxiosResponse) => {
+                return res;
+            },
+            (error: AxiosError) => {
+                if (error.response?.status === 401) {
+                    this._logout?.();
+                    this.setAuth(null, null);
+                }
+                return Promise.reject(error);
+            }
+        )
     }
 
-    setToken(token: string): void {
+    setAuth(token: string | null, logout: (() => void) | null): void {
         this._token = token;
+        this._logout = logout;
     }
 
     async get<T>(endpoint: string, params?: Record<string, string>): Promise<T> {
         const parameters = this.buildParameters(params);
-        return this._instance.get<T>(endpoint, parameters)
+        return this._axios.get<T>(endpoint, parameters)
             .then(res => res.data);
     }
 
     async delete<T>(endpoint: string, params?: Record<string, string>): Promise<T> {
         const parameters = this.buildParameters(params);
-        return this._instance.delete(endpoint, parameters).then(res => res.data);
+        return this._axios.delete(endpoint, parameters).then(res => res.data);
     }
 
     async post<T>(endpoint: string, data: unknown, params?: Record<string, string>): Promise<T> {
         const parameters = this.buildParameters(params);
         const body: string | undefined = this.buildBody(data);
-        return this._instance.post<T>(endpoint, body, parameters)
+        return this._axios.post<T>(endpoint, body, parameters)
             .then(res => res.data);
     }
 
     async patch<T>(endpoint: string, data: unknown, params?: Record<string, string>): Promise<T> {
         const parameters = this.buildParameters(params);
         const body: string | undefined = this.buildBody(data);
-        return this._instance.patch<T>(endpoint, body, parameters)
+        return this._axios.patch<T>(endpoint, body, parameters)
             .then(res => res.data);
     }
 

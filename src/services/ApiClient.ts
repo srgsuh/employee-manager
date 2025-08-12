@@ -18,5 +18,5 @@ export interface ApiClient {
     addEmployee(employee: Employee): Promise<Employee>;
     deleteEmployee(id: string): Promise<Employee>;
     updateEmployee(updater: Updater): Promise<Employee>;
-    setToken(token: string): void;
+    setAuth(token: string | null, logout: (() => void) | null): void;
 }

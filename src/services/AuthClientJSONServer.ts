@@ -23,4 +23,5 @@ class AuthClientJSONServer implements AuthClient {
     async logout(): Promise<void> {}
 }
 
-export default new AuthClientJSONServer();
+const authClient = new AuthClientJSONServer();
+export default authClient;

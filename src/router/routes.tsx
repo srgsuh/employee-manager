@@ -8,16 +8,20 @@ import Layout from "../pages/Layout.tsx";
 import LoginPage from "../pages/LoginPage.tsx";
 
 const router = createBrowserRouter([
-    {path: '/', element: <Layout />, children: [
-        {path: 'login', element: <LoginPage/>},
-        {path: '', element: <HomePage />},
-        {path: 'add', element: <AddEmployeePage />},
-        {path: 'statistics', children: [
-                {path: 'by-age', element: <AgeStatsPage />},
-                {path: 'by-department', element: <DepartmentStatsPage />},
-                {path: 'by-salary', element: <SalaryStatsPage />},
-            ]},
-    ]},
+    {path: '/login', element: <LoginPage/>},
+    {
+        path: '/', element: <Layout/>, children: [
+            {index: true, element: <HomePage/>},
+            {path: 'add', element: <AddEmployeePage/>},
+            {
+                path: 'statistics', children: [
+                    {path: 'by-age', element: <AgeStatsPage/>},
+                    {path: 'by-department', element: <DepartmentStatsPage/>},
+                    {path: 'by-salary', element: <SalaryStatsPage/>},
+                ]
+            },
+        ]
+    },
 ]);
 
 export default router;

@@ -1,4 +1,3 @@
-import type {ApiTransport} from "./ApiTransport.ts";
 import appConfig from "../config/config.ts";
 
 const baseUrl = appConfig.db.baseURL;
@@ -23,7 +22,7 @@ const BASE_REQUEST = {
     headers: new Headers({'Content-Type': 'application/json;charset=UTF-8'}),
 };
 
-export default class ApiTransportFetch implements ApiTransport {
+export default class ApiTransportFetch {
     _token: string | undefined;
     setToken(token: string): void {
         this._token = token;

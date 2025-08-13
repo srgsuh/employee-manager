@@ -10,8 +10,11 @@ interface Props {
 const LoginForm: FC<Props> = ({submitter}) => {
     const {register, handleSubmit, formState: { errors }, reset, resetField} = useForm<LoginData>();
     const [alertMessage, setAlertMessage] = useState<string | null>(null);
+    const [isPending, setIsPending] = useState<boolean>(false);
     const onSubmit = handleSubmit(async (data) => {
+        setIsPending(true);
         const errorMessage = await submitter(data);
+        setIsPending(false);
         setAlertMessage(errorMessage);
         if (!errorMessage) {
             reset();
@@ -42,7 +45,10 @@ const LoginForm: FC<Props> = ({submitter}) => {
                     <Field.ErrorText>{errors.password?.message}</Field.ErrorText>
                 </Field.Root>
 
-                <Button type="submit" w={"100%"}>Submit</Button>
+                <Button type="submit" w={"100%"}
+                        loading={isPending}
+                        loadingText={"Requesting..."}
+                >Submit</Button>
                 {!!alertMessage && <Alert.Root status="error">
                     <Alert.Indicator />
                     <Alert.Title>{alertMessage}</Alert.Title>

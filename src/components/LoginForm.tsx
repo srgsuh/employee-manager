@@ -4,19 +4,17 @@ import {Alert, Button, Field, Input, Stack} from "@chakra-ui/react";
 import {type FC, useState} from "react";
 
 interface Props {
-    submitter: (data: LoginData) => Promise<boolean>,
+    submitter: (data: LoginData) => Promise<string>,
 }
 
 const LoginForm: FC<Props> = ({submitter}) => {
     const {register, handleSubmit, formState: { errors }, reset, resetField} = useForm<LoginData>();
-    const [isAlert, setIsAlert] = useState<boolean>(false);
+    const [alertMessage, setAlertMessage] = useState<string | null>(null);
     const onSubmit = handleSubmit(async (data) => {
-        const isSuccess = await submitter(data);
-        if (isSuccess) {
+        const errorMessage = await submitter(data);
+        setAlertMessage(errorMessage);
+        if (!errorMessage) {
             reset();
-        }
-        else {
-            setIsAlert(true);
         }
     })
 
@@ -28,7 +26,7 @@ const LoginForm: FC<Props> = ({submitter}) => {
                     <Input {...register("email",
                         {required: {value: true, message: "Email is required"}})
                     } onFocus={() =>{
-                        setIsAlert(false);
+                        setAlertMessage(null);
                     }}/>
                     <Field.ErrorText>{errors.email?.message}</Field.ErrorText>
                 </Field.Root>
@@ -39,15 +37,15 @@ const LoginForm: FC<Props> = ({submitter}) => {
                         required: {value: true, message: "Password is required"},})
                     } type="password" onFocus={() => {
                         resetField("password");
-                        setIsAlert(false);
+                        setAlertMessage(null);
                     }}/>
                     <Field.ErrorText>{errors.password?.message}</Field.ErrorText>
                 </Field.Root>
 
                 <Button type="submit" w={"100%"}>Submit</Button>
-                {isAlert && <Alert.Root status="error">
+                {!!alertMessage && <Alert.Root status="error">
                     <Alert.Indicator />
-                    <Alert.Title>Wrong credentials</Alert.Title>
+                    <Alert.Title>{alertMessage}</Alert.Title>
                 </Alert.Root>}
             </Stack>
         </form>

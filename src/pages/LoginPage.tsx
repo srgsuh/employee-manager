@@ -6,7 +6,7 @@ import {HStack} from "@chakra-ui/react";
 import apiClient from "../services/ApiClientDB.ts";
 import {useNavigate} from "react-router-dom";
 import {Toaster, toaster} from "../components/ui/toaster"
-import {Axios, AxiosError} from "axios";
+import { AuthenticationError, NetworkError } from "../model/errors.ts";
 
 const LoginPage = () => {
     const login = useAuthData((state) => state.login);
@@ -14,7 +14,8 @@ const LoginPage = () => {
 
     const navigate = useNavigate();
 
-    const submitter = async (loginData: LoginData)=> {
+    const submitter = async (loginData: LoginData): Promise<string> => {
+        let errorMessage = "";
         try {
             const userData = await authClient.login(loginData);
             login(userData);
@@ -29,24 +30,27 @@ const LoginPage = () => {
                 closable: true,
                 type: "success",
             });
-            return true;
         }
-        //TODO Prettify error - make several cases
+
         catch (e: unknown) {
-            const message = (e instanceof AxiosError)?
-                `AXIOS ERROR: ${e.message}, code: ${e.code}` : `${e}`;
-            //const message = (e instanceof Error)? e.message: `${e}`;
+            if (e instanceof AuthenticationError) {
+                errorMessage = "Wrong Credentials";
+            }
+            else if (e instanceof NetworkError) {
+                errorMessage = "Server is unreachable. Try again later.";
+            }
+            else {
+                errorMessage = `An unexpected error occurred: ${e instanceof Error? e.message: e}`;
+            }
             toaster.create({
-                description: `Login failed: ${message}`,
+                description: `Login failed: ${errorMessage}`,
                 closable: true,
                 type: "error",
             });
         }
-        return false;
+        return errorMessage;
     }
-    // if (isLoggedIn) {
-    //     return <Navigate to="/" replace />;
-    // }
+    
     return (
         <HStack justify={"center"} align={"center"}>
             <LoginForm submitter={submitter}>

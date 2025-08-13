@@ -1,6 +1,5 @@
 import {create} from "zustand";
 import type {UserData} from "../services/AuthClient.ts";
-import {persist} from "zustand/middleware";
 
 export interface AuthData {
     isLoggedIn: boolean;
@@ -9,18 +8,13 @@ export interface AuthData {
     logout: () => void;
 }
 
-export const useAuthData = create<AuthData>()(
-    persist(
-        set => ({
-            isLoggedIn: false,
-            userData: null,
-            login: (userData: UserData) => set({userData, isLoggedIn: true}),
-            logout: () => set({userData: null, isLoggedIn: false}),
-        }),
-        {
-            name: "empl-man-auth-storage",
-        }
-    )
+export const useAuthData = create<AuthData>(
+    set => ({
+        isLoggedIn: false,
+        userData: null,
+        login: (userData: UserData) => set({userData, isLoggedIn: true}),
+        logout: () => set({userData: null, isLoggedIn: false}),
+    })
 );
 
 export interface EmployeeFilter {

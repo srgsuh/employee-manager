@@ -1,7 +1,7 @@
 import type {ApiTransport} from "./ApiTransport.ts"
 import axios, {AxiosError, type AxiosInstance, type AxiosRequestConfig, type AxiosResponse} from "axios";
 import appConfig from "../config/config.ts";
-import {AuthenticationError, HttpError, NetworkError} from "../model/errors.ts";
+import {AuthenticationError, HttpError, NetworkError, TimeoutError} from "../model/errors.ts";
 import {isErrorResponse} from "../model/ErrorResponse.ts";
 
 
@@ -16,6 +16,9 @@ function createHttpError(axiosError: AxiosError): HttpError {
     }
     else if (axiosError.code === "ERR_NETWORK") {
         error = new NetworkError(message, axiosError.code);
+    }
+    else if (axiosError.code === "ECONNABORTED") {
+        error = new TimeoutError(message, axiosError.code);
     }
     else {
         error = new HttpError(message, axiosError.code, axiosError.status);

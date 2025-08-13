@@ -6,7 +6,7 @@ import {HStack} from "@chakra-ui/react";
 import apiClient from "../services/ApiClientDB.ts";
 import {useNavigate} from "react-router-dom";
 import {Toaster, toaster} from "../components/ui/toaster"
-import { AuthenticationError, NetworkError } from "../model/errors.ts";
+import {AuthenticationError, NetworkError, TimeoutError} from "../model/errors.ts";
 
 const LoginPage = () => {
     const login = useAuthData((state) => state.login);
@@ -36,7 +36,7 @@ const LoginPage = () => {
             if (e instanceof AuthenticationError) {
                 errorMessage = "Wrong Credentials";
             }
-            else if (e instanceof NetworkError) {
+            else if (e instanceof NetworkError || e instanceof TimeoutError) {
                 errorMessage = "Server is unreachable. Try again later.";
             }
             else {

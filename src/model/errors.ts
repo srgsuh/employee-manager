@@ -22,3 +22,10 @@ export class NetworkError extends HttpError {
         super(message, code, status);
     }
 }
+
+export class TimeoutError extends HttpError {
+    name: string = "TimeoutError";
+    constructor(message: string, code?: string, status?: number) {
+        super(message, code, status);
+    }
+}

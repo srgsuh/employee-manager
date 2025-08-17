@@ -6,8 +6,9 @@ import AlertDialog from "./AlertDialog.tsx";
 import useEmployeesMutation from "../hooks/useEmployeesMutation.ts";
 import EmployeeEditWindow from "./EmployeeEditWindow.tsx";
 import useGetEmployees from "../hooks/useGetEmployees.ts";
-import useEmployeeFilter, {type EmployeeFilter} from "../state-management/store.ts";
+import useEmployeeFilter, {type EmployeeFilter, useAuthData} from "../state-management/store.ts";
 import _ from "lodash";
+import {isAdminRole} from "../utils/roles-utils.ts";
 
 type Props = {
     apiClient: ApiClient;
@@ -21,18 +22,25 @@ function buildSearchObject({department, ageTo, ageFrom, salaryTo, salaryFrom}: E
         ...(salaryTo && {salaryTo}),
         ...(salaryFrom && {salaryFrom})
     }
-
     return _.isEmpty(searchObject) ? undefined : searchObject;
 }
 
 const EmployeeTable: FC<Props> = ({apiClient}) => {
+    const role = useAuthData(s=>s.userData?.role);
+
+
     const state = useEmployeeFilter();
     const searchObject = buildSearchObject(state);
-    const {isLoading, error, data} = useGetEmployees(apiClient.getAllQuery(searchObject));
+    const {isLoading, error, data} = useGetEmployees(
+        () => apiClient.getAll(searchObject),
+        searchObject
+    );
 
     const mutationDelete = useEmployeesMutation<string>(
         (id) => apiClient.deleteEmployee(id)
     );
+
+    const isAdmin = isAdminRole(role);
 
     return (
         <Stack p={2} height={"100%"} justify={"center"} alignItems={"center"}>
@@ -48,7 +56,7 @@ const EmployeeTable: FC<Props> = ({apiClient}) => {
                             <Table.ColumnHeader>Department</Table.ColumnHeader>
                             <Table.ColumnHeader>Birthdate</Table.ColumnHeader>
                             <Table.ColumnHeader>Salary</Table.ColumnHeader>
-                            <Table.ColumnHeader>Admin options</Table.ColumnHeader>
+                            {isAdmin && <Table.ColumnHeader>Admin options</Table.ColumnHeader>}
                         </Table.Row>
                     </Table.Header>
 
@@ -64,7 +72,7 @@ const EmployeeTable: FC<Props> = ({apiClient}) => {
                                 <Table.Cell>{e.department}</Table.Cell>
                                 <Table.Cell>{e.birthDate}</Table.Cell>
                                 <Table.Cell textAlign="end">{e.salary}</Table.Cell>
-                                <Table.Cell>
+                                {isAdmin && <Table.Cell>
                                     <HStack justify={"space-around"}>
                                         <AlertDialog itemDescription={`the record of employee ${e.fullName}`}
                                                      isDisabled={mutationDelete.isPending}
@@ -73,17 +81,17 @@ const EmployeeTable: FC<Props> = ({apiClient}) => {
                                         <EmployeeEditWindow
                                             isDisabled={mutationDelete.isPending}
                                             affector={
-                                            (empl: Employee) => {
-                                                const updater: Updater = {
-                                                  id: e.id!,
-                                                  fields: {...e, ...empl}
-                                                };
-                                                return apiClient.updateEmployee(updater);
-                                            }}
+                                                (empl: Employee) => {
+                                                    const updater: Updater = {
+                                                        id: e.id!,
+                                                        fields: {...e, ...empl}
+                                                    };
+                                                    return apiClient.updateEmployee(updater);
+                                                }}
                                             employee={e}
                                         />
                                     </HStack>
-                                </Table.Cell>
+                                </Table.Cell>}
                             </Table.Row>
                         ))}
                     </Table.Body>

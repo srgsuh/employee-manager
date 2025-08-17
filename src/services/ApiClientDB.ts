@@ -1,7 +1,6 @@
-import type {ApiClient, QueryVariables, Updater} from "./ApiClient";
+import type {ApiClient, Updater} from "./ApiClient";
 import type {Employee, SearchObject} from "../model/dto-types.ts";
 import {apiTransport} from "./ApiTransport.ts";
-import appConfig from "../config/config.ts";
 import {getBirthDateFromAge} from "../utils/math.ts";
 import type {ApiTransport} from "./ApiTransport.ts";
 import _ from "lodash";
@@ -16,15 +15,6 @@ class ApiClientDB implements ApiClient {
     constructor(apiTransport: ApiTransport) {
         console.log(`ApiClientDB construct using transport: ${apiTransport?.constructor?.name}`);
         this._apiTransport = apiTransport;
-    }
-
-    getAllQuery(searchObject?: SearchObject): QueryVariables<Employee[]> {
-        const staleTime = appConfig.query.staleTime;
-        const params = this._searchObjectToParams(searchObject);
-        const queryFn = async () => this._getAll(params);
-        const queryKey = params? ["/employees", params]: ["/employees"];
-
-        return {queryFn, queryKey, staleTime};
     }
 
     async getAll(searchObject?: SearchObject): Promise<Employee[]> {

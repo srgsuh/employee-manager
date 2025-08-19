@@ -62,7 +62,8 @@ const EmployeeEditForm = (
     }
 
     const formSubmitHandler = (editEmployee: Employee) => {
-        const employee = {...baseEmployee, ...editEmployee};
+        const base: Partial<Employee> = baseEmployee? baseEmployee: {avatar: ""};
+        const employee = {...base, ...editEmployee};
         mutation.mutate(employee, {
             onSettled: mutationSettleHandler
         });

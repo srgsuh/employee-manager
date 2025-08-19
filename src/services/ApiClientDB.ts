@@ -36,7 +36,7 @@ class ApiClientDB implements ApiClient {
     }
 
     addEmployee(employee: Employee): Promise<Employee> {
-        return this._apiTransport.post<Employee>('/employees', employee);
+        return this._apiTransport.post<Employee>('/employees', {...employee, userId: "ADMIN"});
     }
 
     updateEmployee({id, fields}: Updater): Promise<Employee> {

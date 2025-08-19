@@ -5,6 +5,7 @@ export interface Employee {
     department: string;
     birthDate: string;
     salary: number;
+    userId?: string;
 }
 
 export interface SearchObject {

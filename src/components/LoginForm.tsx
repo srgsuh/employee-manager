@@ -8,21 +8,22 @@ interface Props {
 }
 
 const LoginForm: FC<Props> = ({submitter}) => {
-    const {register, handleSubmit, formState: { errors }, reset, resetField} = useForm<LoginData>();
+    const {register, handleSubmit, formState: { errors, isSubmitting }, resetField} = useForm<LoginData>();
     const [alertMessage, setAlertMessage] = useState<string | null>(null);
-    const [isPending, setIsPending] = useState<boolean>(false);
+    const [isLocked, setIsLocked] = useState(false);
+
     const onSubmit = handleSubmit(async (data) => {
-        setAlertMessage(null);
-        setIsPending(true);
-        submitter(data)
-            .then(()=> {
-                reset();
-            })
-            .catch((e: unknown) => {
-                setAlertMessage(e instanceof Error? e.message: `${e}`);
-            })
-            .finally(()=> setIsPending(false));
-    })
+        if (alertMessage) {
+            setAlertMessage(null);
+        }
+        setIsLocked(true);
+        try {
+            await submitter(data);
+        } catch (e) {
+            setIsLocked(false);
+            setAlertMessage(e instanceof Error? e.message: `${e}`);
+        }
+    });
 
     return (
         <form onSubmit={onSubmit}>
@@ -33,7 +34,7 @@ const LoginForm: FC<Props> = ({submitter}) => {
                         {required: {value: true, message: "Email is required"}})
                     } onFocus={() =>{
                         setAlertMessage(null);
-                    }}/>
+                    }} disabled={isLocked}/>
                     <Field.ErrorText>{errors.email?.message}</Field.ErrorText>
                 </Field.Root>
 
@@ -44,13 +45,14 @@ const LoginForm: FC<Props> = ({submitter}) => {
                     } type="password" onFocus={() => {
                         resetField("password");
                         setAlertMessage(null);
-                    }}/>
+                    }} disabled={isLocked}/>
                     <Field.ErrorText>{errors.password?.message}</Field.ErrorText>
                 </Field.Root>
 
                 <Button type="submit" w={"100%"}
-                        loading={isPending}
-                        loadingText={"Requesting..."}
+                        loading={isSubmitting}
+                        loadingText={"Logging in..."}
+                        disabled = {isLocked}
                 >Submit</Button>
                 {!!alertMessage && <Alert.Root status="error">
                     <Alert.Indicator />

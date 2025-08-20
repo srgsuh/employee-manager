@@ -4,15 +4,12 @@ import {ColorModeButton} from "./ui/color-mode.tsx";
 import StatisticsSelector from "./StatisticsSelector.tsx";
 import type {FC} from "react";
 import {useAuthData} from "../state-management/store.ts";
-import {isAdminRole, extractName} from "../utils/roles-utils.ts";
+import {isAdminRole} from "../utils/roles-utils.ts";
+import LogoutButton from "./LogoutButton.tsx";
 
 const Navigator: FC = () => {
     const role = useAuthData(s=>s.userData?.role);
-    const userName = useAuthData(s=>s.userData?.email);
-    const logout = useAuthData(s=>s.logout);
-
     const isAdmin = isAdminRole(role);
-    const name = extractName(userName);
 
     return (
         <HStack p={2} separator={<StackSeparator />}>
@@ -29,9 +26,7 @@ const Navigator: FC = () => {
                 </Button>}
                 <StatisticsSelector>
                 </StatisticsSelector>
-                <Button variant="ghost" size="sm" minW={200} onClick = {logout}>
-                    Logout: {name}
-                </Button>
+                <LogoutButton />
             </HStack>
             <ColorModeButton size={"md"}/>
         </HStack>

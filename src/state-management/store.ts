@@ -1,5 +1,6 @@
 import {create} from "zustand";
 import type {UserData} from "../services/AuthClient.ts";
+import {pageSize} from "../config/employees-config.json";
 
 export interface AuthData {
     isLoggedIn: boolean;
@@ -44,5 +45,25 @@ const useEmployeeFilter = create<EmployeeFilter>(
         setAgeTo: (ageTo: number | null) => set({ageTo}),
     })
 );
+
+export interface PageState {
+    page: number;
+    itemCount: number;
+    setPage: (page: number) => void;
+    setItemCount: (maxPage: number) => void;
+}
+
+export const usePageState = create<PageState>(
+    set => ({
+        page: 1,
+        itemCount: 0,
+        setPage: (page: number) => set({page}),
+        setItemCount: (itemCount: number) => set(s => ({itemCount, page: pageValue(s.page, itemCount)})),
+    })
+);
+
+function pageValue(page: number, count: number): number {
+    return (count > 0)? Math.min(page, Math.ceil(count / pageSize)): 1;
+}
 
 export default useEmployeeFilter;

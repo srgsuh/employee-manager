@@ -4,7 +4,7 @@ import {Alert, Button, Field, Input, Stack} from "@chakra-ui/react";
 import {type FC, useState} from "react";
 
 interface Props {
-    submitter: (data: LoginData) => Promise<string>,
+    submitter: (data: LoginData) => Promise<void>,
 }
 
 const LoginForm: FC<Props> = ({submitter}) => {
@@ -12,13 +12,16 @@ const LoginForm: FC<Props> = ({submitter}) => {
     const [alertMessage, setAlertMessage] = useState<string | null>(null);
     const [isPending, setIsPending] = useState<boolean>(false);
     const onSubmit = handleSubmit(async (data) => {
+        setAlertMessage(null);
         setIsPending(true);
-        const errorMessage = await submitter(data);
-        setIsPending(false);
-        setAlertMessage(errorMessage);
-        if (!errorMessage) {
-            reset();
-        }
+        submitter(data)
+            .then(()=> {
+                reset();
+            })
+            .catch((e: unknown) => {
+                setAlertMessage(e instanceof Error? e.message: `${e}`);
+            })
+            .finally(()=> setIsPending(false));
     })
 
     return (

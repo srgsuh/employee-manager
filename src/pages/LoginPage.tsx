@@ -6,40 +6,43 @@ import {Flex, HStack, VStack} from "@chakra-ui/react";
 import apiClient from "../services/ApiClientDB.ts";
 import {useNavigate} from "react-router-dom";
 import {Toaster, toaster} from "../components/ui/toaster"
-import {AuthenticationError, NetworkError} from "../model/errors.ts";
 import {ColorModeButton} from "../components/ui/color-mode.tsx";
+import config from "../config/config.ts";
+import {useEffect, useState} from "react";
 
+const redirectTimeOut = config.redirect.timeout;
 
+const showToaster = () => {
+    toaster.create({
+        description: "Login successful. Redirecting to home page...",
+        closable: true,
+        type: "success",
+    });
+}
 
 const LoginPage = () => {
     const login = useAuthData((state) => state.login);
+    const [startRedirect, setStartRedirect] = useState(false);
     const navigate = useNavigate();
 
-    const submitter = async (loginData: LoginData): Promise<string> => {
-        try {
-            const userData = await authClient.login(loginData);
-            login(userData);
-            apiClient.setToken(userData.token);
-            setTimeout(() => navigate("/", {replace: true}), 1350);
-
-            toaster.create({
-                description: "Login successful. Redirecting to home page...",
-                closable: true,
-                type: "success",
-            });
-
-            return "";
-        } catch (e: unknown) {
-            const errorMessage = getErrorMessage(e);
-            toaster.create({
-                description: `Login failed: ${errorMessage}`,
-                closable: true,
-                type: "error",
-            });
-            return errorMessage;
+    useEffect(() => {
+        let timer: ReturnType<typeof setTimeout>;
+        if (startRedirect) {
+            timer = setTimeout(() => {
+                navigate("/", {replace: true});
+            }, redirectTimeOut);
         }
+        return () => { if (timer) clearTimeout(timer); }
+    }, [startRedirect, navigate])
+
+    const submitter = async (loginData: LoginData): Promise<void> => {
+        const userData = await authClient.login(loginData);
+        login(userData);
+        apiClient.setToken(userData.token);
+        setStartRedirect(true);
+        showToaster();
     }
-    
+
     return (
         <VStack w={"100%"} h={"100vh"}>
             <HStack justify={"flex-end"} p={2} w={"100%"}>
@@ -55,17 +58,3 @@ const LoginPage = () => {
 };
 
 export default LoginPage;
-
-function getErrorMessage(e: unknown): string {
-    let errorMessage: string;
-    if (e instanceof AuthenticationError) {
-        errorMessage = "Wrong Credentials";
-    }
-    else if (e instanceof NetworkError) {
-        errorMessage = "Server is unreachable. Try again later.";
-    }
-    else {
-        errorMessage = `An unexpected error occurred: ${e instanceof Error? e.message: e}`;
-    }
-    return errorMessage;
-}

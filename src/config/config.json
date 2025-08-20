@@ -6,5 +6,8 @@
   },
   "query": {
     "staleTime": 3600000
+  },
+  "redirect": {
+    "timeout": 3000
   }
 }

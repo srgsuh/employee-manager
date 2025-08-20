@@ -6,20 +6,29 @@ import DepartmentStatsPage from "../pages/DepartmentStatsPage.tsx";
 import SalaryStatsPage from "../pages/SalaryStatsPage.tsx";
 import Layout from "../pages/Layout.tsx";
 import LoginPage from "../pages/LoginPage.tsx";
+import ErrorPage from "../pages/ErrorPage.tsx";
+import ProtectedRoute from "../pages/ProtectedRoute.tsx";
 
 const router = createBrowserRouter([
     {path: '/login', element: <LoginPage/>},
     {
-        path: '/', element: <Layout/>, children: [
-            {index: true, element: <HomePage/>},
-            {path: 'add', element: <AddEmployeePage/>},
+        path: '/', element: <ProtectedRoute/>,
+        children:[
             {
-                path: 'statistics', children: [
-                    {path: 'by-age', element: <AgeStatsPage/>},
-                    {path: 'by-department', element: <DepartmentStatsPage/>},
-                    {path: 'by-salary', element: <SalaryStatsPage/>},
+                element: <Layout/>,
+                errorElement: <ErrorPage/>,
+                children: [
+                    {index: true, element: <HomePage/>},
+                    {path: 'add', element: <AddEmployeePage/>},
+                    {
+                        path: 'statistics', children: [
+                            {path: 'by-age', element: <AgeStatsPage/>},
+                            {path: 'by-department', element: <DepartmentStatsPage/>},
+                            {path: 'by-salary', element: <SalaryStatsPage/>},
+                        ]
+                    },
                 ]
-            },
+            }
         ]
     },
 ]);

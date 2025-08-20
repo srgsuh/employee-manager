@@ -8,8 +8,8 @@ import _ from "lodash";
 class ApiClientDB implements ApiClient {
     _apiTransport: ApiTransport;
 
-    setAuth(token: string | null, logout: (() => void) | null): void {
-        this._apiTransport.setAuth(token, logout);
+    setToken(token: string | null): void {
+        this._apiTransport.setToken(token);
     }
 
     constructor(apiTransport: ApiTransport) {

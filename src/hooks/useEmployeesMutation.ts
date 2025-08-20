@@ -5,7 +5,7 @@ export default function useEmployeesMutation<T>(
     mutationFunction: MutationFunction<Employee, T>,
 ): UseMutationResult<Employee, Error, T>{
     const queryClient = useQueryClient();
-    return useMutation<Employee, Error, T>({
+    const mutationResult = useMutation<Employee, Error, T>({
             mutationFn: mutationFunction,
             onSuccess: async () => {
                 await queryClient.invalidateQueries({queryKey: ["/employees"]});
@@ -13,4 +13,8 @@ export default function useEmployeesMutation<T>(
         },
         queryClient
     );
+    if (mutationResult.isError) {
+        throw mutationResult.error;
+    }
+    return mutationResult;
 }

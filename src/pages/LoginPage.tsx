@@ -6,22 +6,20 @@ import {Flex, HStack, VStack} from "@chakra-ui/react";
 import apiClient from "../services/ApiClientDB.ts";
 import {useNavigate} from "react-router-dom";
 import {Toaster, toaster} from "../components/ui/toaster"
-import {AuthenticationError, NetworkError, TimeoutError} from "../model/errors.ts";
+import {AuthenticationError, NetworkError} from "../model/errors.ts";
 import {ColorModeButton} from "../components/ui/color-mode.tsx";
 
 
 
 const LoginPage = () => {
     const login = useAuthData((state) => state.login);
-    const logout = useAuthData((state) => state.logout);
-
     const navigate = useNavigate();
 
     const submitter = async (loginData: LoginData): Promise<string> => {
         try {
             const userData = await authClient.login(loginData);
             login(userData);
-            apiClient.setAuth(userData.token, logout);
+            apiClient.setToken(userData.token);
             setTimeout(() => navigate("/", {replace: true}), 1350);
 
             toaster.create({
@@ -63,7 +61,7 @@ function getErrorMessage(e: unknown): string {
     if (e instanceof AuthenticationError) {
         errorMessage = "Wrong Credentials";
     }
-    else if (e instanceof NetworkError || e instanceof TimeoutError) {
+    else if (e instanceof NetworkError) {
         errorMessage = "Server is unreachable. Try again later.";
     }
     else {

@@ -1,7 +1,7 @@
 import type {ApiClient, Updater} from "../services/ApiClient.ts";
 import type {FC} from "react";
 import type {Employee, SearchObject} from "../model/dto-types.ts";
-import {Avatar, HStack, Spinner, Stack, Table, Text} from "@chakra-ui/react";
+import {Avatar, HStack, Spinner, Stack, Table} from "@chakra-ui/react";
 import AlertDialog from "./AlertDialog.tsx";
 import useEmployeesMutation from "../hooks/useEmployeesMutation.ts";
 import EmployeeEditWindow from "./EmployeeEditWindow.tsx";
@@ -26,26 +26,28 @@ function buildSearchObject({department, ageTo, ageFrom, salaryTo, salaryFrom}: E
 }
 
 const EmployeeTable: FC<Props> = ({apiClient}) => {
-    const role = useAuthData(s=>s.userData?.role);
-
-
     const state = useEmployeeFilter();
     const searchObject = buildSearchObject(state);
-    const {isLoading, error, data} = useGetEmployees(
+    const {isLoading, error, isError, data} = useGetEmployees(
         () => apiClient.getAll(searchObject),
         searchObject
     );
 
+    if (isError) {
+        throw error;
+    }
+
     const mutationDelete = useEmployeesMutation<string>(
         (id) => apiClient.deleteEmployee(id)
     );
+
+    const role = useAuthData(s=>s.userData?.role);
 
     const isAdmin = isAdminRole(role);
 
     return (
         <Stack p={2} height={"100%"} justify={"center"} alignItems={"center"}>
             {isLoading && <Spinner />}
-            {error && <Text color={"red"}>{`Network error: ${error.message}`}</Text>}
             <Table.ScrollArea borderWidth="1px" rounded="md" height="80vh" width={"85vw"}>
                 <Table.Root size="sm" stickyHeader>
                     <Table.Header>

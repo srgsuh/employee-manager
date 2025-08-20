@@ -1,35 +1,32 @@
 import type {ApiTransport} from "./ApiTransport.ts"
-import axios, {AxiosError, type AxiosInstance, type AxiosRequestConfig, type AxiosResponse} from "axios";
+import axios, {type AxiosInstance, type AxiosRequestConfig, type AxiosResponse, isAxiosError} from "axios";
 import appConfig from "../config/config.ts";
-import {AuthenticationError, HttpError, NetworkError, TimeoutError} from "../model/errors.ts";
+import {AuthenticationError, AuthorizationError, HttpError, NetworkError} from "../model/errors.ts";
 import {isErrorResponse} from "../model/ErrorResponse.ts";
 
+function createHttpError(error: unknown): HttpError {
+    let httpError: HttpError | undefined = undefined;
+    if (isAxiosError(error)) {
+        const response = error.response?.data || error.message;
+        const message = isErrorResponse(response) ? response.error : `${response}`;
 
-
-function createHttpError(axiosError: AxiosError): HttpError {
-    let error: HttpError;
-    const message =
-        isErrorResponse(axiosError.response?.data) ? axiosError.response?.data.error: axiosError.message;
-    console.log("SERVER ERROR:", JSON.stringify(axiosError.response?.data, null, 2));
-    if (axiosError.status === 401) {
-        error = new AuthenticationError(message, axiosError.code);
+        if (error.status === 401) {
+            httpError = new AuthenticationError(message, error.code);
+        } else if (error.status === 403) {
+            httpError = new AuthorizationError(message, error.code);
+        } else if (error.code === "ERR_NETWORK" || error.code === "ECONNABORTED") {
+            httpError = new NetworkError("Server is unavailable. Try again later", error.code);
+        }
+        else {
+            httpError = new HttpError(message, error.code, error.status);
+        }
     }
-    else if (axiosError.code === "ERR_NETWORK") {
-        error = new NetworkError(message, axiosError.code);
-    }
-    else if (axiosError.code === "ECONNABORTED") {
-        error = new TimeoutError(message, axiosError.code);
-    }
-    else {
-        error = new HttpError(message, axiosError.code, axiosError.status);
-    }
-    return error;
+    return httpError ?? new HttpError(error instanceof Error? error.message: `${error}`);
 }
 
 export default class ApiTransportAxios implements ApiTransport {
     private _axios: AxiosInstance;
     private _token: string | null = null;
-    private _logout: (() => void) | null = null;
 
     constructor() {
         this._axios = axios.create({
@@ -45,21 +42,13 @@ export default class ApiTransportAxios implements ApiTransport {
                 return res;
             },
             (error: unknown) => {
-                console.log("RECEIVED ERROR:", JSON.stringify(error, null, 2));
-                if (error instanceof AxiosError) {
-                    if (error.status === 401) {
-                        this._logout?.();
-                        this.setAuth(null, null);
-                    }
-                    return Promise.reject(createHttpError(error));
-                }
+                return Promise.reject(createHttpError(error));
             }
-        )
+        );
     }
 
-    setAuth(token: string | null, logout: (() => void) | null): void {
+    setToken(token: string | null): void {
         this._token = token;
-        this._logout = logout;
     }
 
     async get<T>(endpoint: string, params?: Record<string, string>): Promise<T> {

@@ -5,7 +5,6 @@ import StatisticsSelector from "./StatisticsSelector.tsx";
 import type {FC} from "react";
 import {useAuthData} from "../state-management/store.ts";
 import {isAdminRole, extractName} from "../utils/roles-utils.ts";
-import apiClient from "../services/ApiClientDB.ts";
 
 const Navigator: FC = () => {
     const role = useAuthData(s=>s.userData?.role);
@@ -14,11 +13,6 @@ const Navigator: FC = () => {
 
     const isAdmin = isAdminRole(role);
     const name = extractName(userName);
-
-    const logoutHandler = () => {
-        logout();
-        apiClient.setAuth(null, null);
-    }
 
     return (
         <HStack p={2} separator={<StackSeparator />}>
@@ -35,7 +29,7 @@ const Navigator: FC = () => {
                 </Button>}
                 <StatisticsSelector>
                 </StatisticsSelector>
-                <Button variant="ghost" size="sm" minW={200} onClick = {logoutHandler}>
+                <Button variant="ghost" size="sm" minW={200} onClick = {logout}>
                     Logout: {name}
                 </Button>
             </HStack>

@@ -8,6 +8,9 @@ interface AppConfig {
     },
     query: {
         staleTime: number;
+    },
+    redirect: {
+        timeout: number;
     }
 }
 

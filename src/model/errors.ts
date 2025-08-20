@@ -10,21 +10,21 @@ export class HttpError extends Error {
 }
 
 export class AuthenticationError extends HttpError {
-    name: string = "AuthError";
+    name: string = "AuthenticationError";
     constructor(message: string, code: string = "AUTH_ERROR") {
         super(message, code, 401);
     }
 }
 
-export class NetworkError extends HttpError {
-    name: string = "NetworkError";
-    constructor(message: string, code?: string, status?: number) {
-        super(message, code, status);
+export class AuthorizationError extends HttpError {
+    name: string = "AuthorizationError";
+    constructor(message: string, code: string = "AUTH_ERROR") {
+        super(message, code, 403);
     }
 }
 
-export class TimeoutError extends HttpError {
-    name: string = "TimeoutError";
+export class NetworkError extends HttpError {
+    name: string = "NetworkError";
     constructor(message: string, code?: string, status?: number) {
         super(message, code, status);
     }
